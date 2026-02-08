@@ -1,0 +1,35 @@
+[
+  {
+    "session_id": "20260205_193139",
+    "game_name": "Brawl Stars - Showdown (Every Brawler for themselves!)",
+    "duration_seconds": 40,
+    "grade": "F",
+    "grade_reason": "The player consistently made poor engagement decisions, took unnecessary damage, and failed to prioritize healing and positioning, leading to multiple eliminations in a short match.",
+    "match_result": "Loss - Eliminated (4th place or worse)",
+    "clips_analyzed": 4,
+    "highlights_count": 4,
+    "exported_at": "2026-02-08T20:17:55.338776"
+  },
+  {
+    "session_id": "20260205_191938",
+    "game_name": "Brawl Stars - Showdown",
+    "duration_seconds": 40,
+    "grade": "B",
+    "grade_reason": "The player demonstrated strong recovery and excellent late-game execution, effectively utilizing Nita's Super and bear. However, an early game positioning mistake led to an unnecessary 2v1 engagement and significant health loss, which could have been avoided.",
+    "match_result": "Win - 1st Place",
+    "clips_analyzed": 4,
+    "highlights_count": 3,
+    "exported_at": "2026-02-08T20:17:53.117005"
+  },
+  {
+    "session_id": "20260205_152317",
+    "game_name": "Brawl Stars",
+    "duration_seconds": 24,
+    "grade": "F",
+    "grade_reason": "The player was eliminated very early in the match due to poor engagement choices and a lack of awareness of opponent power levels. There was minimal offensive action or strategic movement.",
+    "match_result": "Loss - Eliminated with 5 Brawlers left",
+    "clips_analyzed": 3,
+    "highlights_count": 2,
+    "exported_at": "2026-02-08T20:17:46.581681"
+  }
+]

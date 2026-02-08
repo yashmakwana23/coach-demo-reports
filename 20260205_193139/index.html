@@ -1,0 +1,3436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Match Coach Report - 20260205_193139</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+/* ============================================================
+   BASE STYLES - Shared reset, loader, theme switcher bar
+   ============================================================ */
+
+*, *::before, *::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+img, video {
+    max-width: 100%;
+    display: block;
+}
+
+button {
+    cursor: pointer;
+    font-family: inherit;
+}
+
+/* ── LOADER ────────────────────────────────────────────────── */
+
+#loader {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    background: #0d0d0d;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+#loader.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+.loader-ring {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255,255,255,0.1);
+    border-top-color: #c8a96e;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+.loader-text {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    color: rgba(255,255,255,0.4);
+    text-transform: uppercase;
+}
+
+/* ── ERROR STATE ───────────────────────────────────────────── */
+
+.error-state {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    background: #0d0d0d;
+    color: #e0ddd5;
+    padding: 24px;
+    text-align: center;
+}
+
+.error-state .error-icon {
+    font-size: 48px;
+    color: #d97373;
+    font-family: 'Instrument Serif', serif;
+}
+
+.error-state .error-msg {
+    font-size: 15px;
+    color: rgba(255,255,255,0.5);
+    max-width: 400px;
+    line-height: 1.6;
+}
+
+.error-state .error-retry {
+    margin-top: 8px;
+    padding: 10px 24px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    color: #e0ddd5;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: background 0.2s;
+}
+
+.error-state .error-retry:hover {
+    background: rgba(255,255,255,0.12);
+}
+
+/* ── THEME SWITCHER BAR ───────────────────────────────────── */
+
+#theme-bar {
+    display: none !important; /* Hidden - infographic only */
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    gap: 2px;
+    padding: 4px;
+    background: rgba(20, 20, 20, 0.85);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 14px;
+    box-shadow:
+        0 8px 32px rgba(0,0,0,0.4),
+        0 0 0 1px rgba(255,255,255,0.04) inset;
+    opacity: 0;
+    transition: opacity 0.4s ease 0.6s;
+}
+
+#theme-bar.visible {
+    opacity: 1;
+}
+
+.tb-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    border-radius: 10px;
+    color: rgba(255,255,255,0.4);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    transition: all 0.25s ease;
+}
+
+.tb-btn:hover {
+    color: rgba(255,255,255,0.7);
+    background: rgba(255,255,255,0.05);
+}
+
+.tb-btn.active {
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+}
+
+.tb-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+}
+
+.tb-label {
+    line-height: 1;
+}
+
+/* Light theme adaptation for bar */
+body[data-theme="infographic"] #theme-bar {
+    background: rgba(255, 255, 255, 0.9);
+    border-color: rgba(0,0,0,0.08);
+    box-shadow:
+        0 8px 32px rgba(0,0,0,0.12),
+        0 0 0 1px rgba(0,0,0,0.04) inset;
+}
+
+body[data-theme="infographic"] .tb-btn {
+    color: rgba(0,0,0,0.35);
+}
+
+body[data-theme="infographic"] .tb-btn:hover {
+    color: rgba(0,0,0,0.6);
+    background: rgba(0,0,0,0.04);
+}
+
+body[data-theme="infographic"] .tb-btn.active {
+    color: #1a1a1a;
+    background: rgba(0,0,0,0.08);
+}
+
+/* ── SHARED VIDEO PLAYER STYLES ───────────────────────────── */
+
+.video-player {
+    position: relative;
+    width: 100%;
+    background: #000;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.video-player video {
+    width: 100%;
+    display: block;
+    border-radius: 6px;
+}
+
+/* Hide native browser controls (we use custom vp-* controls) */
+.video-player video::-webkit-media-controls {
+    display: none !important;
+}
+
+.video-player video::-webkit-media-controls-enclosure {
+    display: none !important;
+}
+
+/* ── INLINE VIDEO PLAYER CONTROLS (vp-*) ─────────────────── */
+
+.vp-controls-wrap {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 5;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.85));
+    padding: 24px 12px 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.vp-seek-row {
+    position: relative;
+    width: 100%;
+    height: 14px; /* clickable area */
+}
+
+/* ── Highlight dots on seek bar ──────────────────────────── */
+
+.vp-highlight-dot {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    z-index: 3;
+    cursor: pointer;
+    border: 2px solid rgba(0, 0, 0, 0.6);
+    pointer-events: auto;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vp-highlight-dot:hover {
+    transform: translate(-50%, -50%) scale(1.5);
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.4);
+    z-index: 4;
+}
+
+.vp-highlight-dot.active {
+    transform: translate(-50%, -50%) scale(1.6);
+    box-shadow: 0 0 12px rgba(167, 139, 250, 0.6);
+    z-index: 4;
+}
+
+.vp-highlight-dot.ig-hl-mistake    { background: #f87171; }
+.vp-highlight-dot.ig-hl-missed     { background: #fbbf24; }
+.vp-highlight-dot.ig-hl-good       { background: #34d399; }
+.vp-highlight-dot.ig-hl-critical   { background: #a78bfa; }
+.vp-highlight-dot.ig-hl-default    { background: #9a9a8f; }
+
+.vp-seek {
+    -webkit-appearance: none;
+    appearance: none;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    width: 100%;
+    height: 4px;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(to right, rgba(167,139,250,0.7) 0%, rgba(255,255,255,0.2) 0%);
+    border-radius: 2px;
+    outline: none;
+    cursor: pointer;
+}
+
+.vp-seek:hover {
+    height: 5px;
+}
+
+.vp-seek::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+    transition: transform 0.15s ease;
+}
+
+.vp-seek:hover::-webkit-slider-thumb {
+    transform: scale(1.2);
+}
+
+.vp-seek::-moz-range-thumb {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #fff;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+}
+
+.vp-seek::-webkit-slider-runnable-track {
+    border-radius: 2px;
+}
+
+.vp-seek::-moz-range-track {
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+}
+
+.vp-btn-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.vp-btn {
+    background: none;
+    border: none;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.15s ease;
+    padding: 0;
+}
+
+.vp-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.vp-icon {
+    width: 18px;
+    height: 18px;
+}
+
+.vp-time {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    color: rgba(255, 255, 255, 0.85);
+    font-size: 12px;
+    font-weight: 600;
+    font-family: 'Space Grotesk', monospace;
+}
+
+.vp-time-sep {
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.vp-spacer {
+    flex: 1;
+}
+
+.vp-audio-btn.muted {
+    color: #f87171;
+}
+
+.vp-speed-btn {
+    width: auto !important;
+    padding: 0 8px !important;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: 'Space Grotesk', monospace;
+    letter-spacing: 0.5px;
+    color: #a78bfa;
+    border: 1px solid rgba(167, 139, 250, 0.3) !important;
+    border-radius: 4px;
+}
+
+.vp-speed-btn:hover {
+    background: rgba(167, 139, 250, 0.15);
+}
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+
+@media (max-width: 640px) {
+    #theme-bar {
+        bottom: 12px;
+        gap: 1px;
+        padding: 3px;
+        border-radius: 12px;
+    }
+
+    .tb-btn {
+        padding: 7px 10px;
+        font-size: 11px;
+        gap: 4px;
+    }
+
+    .tb-label {
+        display: none;
+    }
+
+    .tb-btn {
+        padding: 8px 12px;
+    }
+}
+
+/* ── CLICKABLE TIMESTAMPS ───────────────────────────────────── */
+
+.clickable-timestamp {
+    display: inline-block;
+    color: #a78bfa;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    background: rgba(167, 139, 250, 0.1);
+    border: 1px solid transparent;
+}
+
+.clickable-timestamp:hover {
+    background: rgba(167, 139, 250, 0.2);
+    border-color: rgba(167, 139, 250, 0.4);
+    transform: translateY(-1px);
+}
+
+.clickable-timestamp:active {
+    transform: translateY(0);
+}
+
+/* ── VIDEO OVERLAY (Bottom popup for timestamp clicks) ─────── */
+
+#video-overlay {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2000;
+    background: rgba(10, 10, 10, 0.98);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-top: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 -8px 32px rgba(0,0,0,0.6);
+    transform: translateY(100%);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    max-height: 45vh;
+    overflow: hidden;
+}
+
+#video-overlay.visible {
+    transform: translateY(0);
+}
+
+.vo-container {
+    display: flex;
+    gap: 20px;
+    padding: 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.vo-video {
+    flex: 0 0 480px;
+    background: #000;
+    border-radius: 8px;
+    overflow: hidden;
+    position: relative;
+}
+
+.vo-video video {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.vo-audio-btn {
+    /* Inherits all styles from .vo-ctrl-btn */
+}
+
+.vo-audio-btn.muted {
+    color: #ef4444 !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Custom video controls */
+.vo-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+    z-index: 5;
+}
+
+.vo-ctrl-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s;
+    backdrop-filter: blur(10px);
+}
+
+.vo-ctrl-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.4);
+    transform: scale(1.05);
+}
+
+.vo-time {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Space Grotesk', monospace;
+    margin-right: auto;
+}
+
+.vo-time-sep {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.vo-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+}
+
+.vo-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.vo-title {
+    font-size: 14px;
+    font-weight: 600;
+    color: rgba(255,255,255,0.9);
+    letter-spacing: 0.5px;
+}
+
+.vo-close {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 6px;
+    padding: 6px 12px;
+    color: rgba(255,255,255,0.6);
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.vo-close:hover {
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.9);
+}
+
+.vo-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.7);
+    overflow-y: auto;
+    max-height: calc(45vh - 100px);
+}
+
+.vo-text::-webkit-scrollbar {
+    width: 6px;
+}
+
+.vo-text::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+    border-radius: 3px;
+}
+
+.vo-text::-webkit-scrollbar-thumb {
+    background: rgba(255,255,255,0.2);
+    border-radius: 3px;
+}
+
+.vo-text::-webkit-scrollbar-thumb:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+@media (max-width: 900px) {
+    .vo-container {
+        flex-direction: column;
+        max-height: 80vh;
+        overflow-y: auto;
+    }
+
+    .vo-video {
+        flex: none;
+        width: 100%;
+    }
+
+    #video-overlay {
+        max-height: 80vh;
+    }
+}
+
+
+    </style>
+    <style>
+/* ============================================================
+   INFOGRAPHIC THEME - Light data-visualization aesthetic
+   Prefixed with ig- to avoid conflicts
+   Fonts: Space Grotesk (headings), Inter (body)
+   ============================================================ */
+
+/* ── CSS Variables ───────────────────────────────────────── */
+
+body[data-theme="infographic"] {
+    --ig-bg: #f8f8f6;
+    --ig-surface: #ffffff;
+    --ig-text: #1a1a17;
+    --ig-text2: #55554d;
+    --ig-text3: #9a9a8f;
+    --ig-border: #e6e6e0;
+    --ig-border-light: #f0f0ea;
+    --ig-green: #16a34a;
+    --ig-green-soft: #f0fdf4;
+    --ig-green-border: #bbf7d0;
+    --ig-red: #dc2626;
+    --ig-red-soft: #fef2f2;
+    --ig-red-border: #fecaca;
+    --ig-amber: #d97706;
+    --ig-amber-soft: #fffbeb;
+    --ig-amber-border: #fde68a;
+    --ig-blue: #2563eb;
+    --ig-blue-soft: #eff6ff;
+    --ig-blue-border: #bfdbfe;
+    --ig-ring-green: #22c55e;
+    --ig-ring-amber: #f59e0b;
+    --ig-ring-red: #ef4444;
+    background: var(--ig-bg);
+    color: var(--ig-text);
+    font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* ── Page Container ──────────────────────────────────────── */
+
+.ig-page {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 48px 24px 120px;
+}
+
+/* ── Header Bar ──────────────────────────────────────────── */
+
+.ig-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 24px;
+    background: var(--ig-surface);
+    border: 1px solid var(--ig-border);
+    border-radius: 14px;
+    margin-bottom: 48px;
+}
+
+.ig-header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.ig-header-game {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ig-text);
+}
+
+.ig-header-meta {
+    font-size: 12px;
+    color: var(--ig-text3);
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.ig-header-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.ig-header-badge {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    background: var(--ig-bg);
+    color: var(--ig-text3);
+    border: 1px solid var(--ig-border);
+}
+
+.ig-header-stats {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ig-text2);
+    white-space: nowrap;
+}
+
+/* ── Grade Ring Section ──────────────────────────────────── */
+
+.ig-grade-section {
+    text-align: center;
+    margin-bottom: 48px;
+}
+
+.ig-ring-wrap {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 24px;
+    position: relative;
+}
+
+.ig-ring-wrap svg {
+    width: 100%;
+    height: 100%;
+    transform: rotate(-90deg);
+}
+
+.ig-ring-bg {
+    fill: none;
+    stroke: var(--ig-border);
+    stroke-width: 10;
+}
+
+.ig-ring-fg {
+    fill: none;
+    stroke-width: 10;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ig-ring-label {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.ig-ring-grade {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-size: 56px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -2px;
+}
+
+.ig-ring-pct {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ig-text3);
+    margin-top: 2px;
+}
+
+.ig-match-result {
+    display: inline-block;
+    padding: 6px 20px;
+    border-radius: 24px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 16px;
+    background: var(--ig-green-soft);
+    color: var(--ig-green);
+    border: 1px solid var(--ig-green-border);
+}
+
+.ig-grade-reason {
+    font-size: 16px;
+    color: var(--ig-text2);
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* ── Divider ─────────────────────────────────────────────── */
+
+.ig-divider {
+    width: 60px;
+    height: 3px;
+    background: var(--ig-text3);
+    margin: 0 auto 48px;
+    border-radius: 2px;
+    opacity: 0.4;
+}
+
+/* ── Section Title ───────────────────────────────────────── */
+
+.ig-section-title {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--ig-text3);
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+/* ── Stats Row ───────────────────────────────────────────── */
+
+.ig-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 48px;
+}
+
+.ig-stat-card {
+    background: var(--ig-surface);
+    border: 1px solid var(--ig-border);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+}
+
+.ig-stat-value {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--ig-text);
+    margin-bottom: 4px;
+}
+
+.ig-stat-label {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--ig-text3);
+    margin-bottom: 10px;
+}
+
+.ig-stat-bar {
+    width: 100%;
+    height: 4px;
+    background: var(--ig-border-light);
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.ig-stat-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    width: 0%;
+    transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.ig-stat-bar-fill.ig-bar-purple { background: #7c3aed; }
+.ig-stat-bar-fill.ig-bar-green { background: var(--ig-green); }
+.ig-stat-bar-fill.ig-bar-blue { background: var(--ig-blue); }
+.ig-stat-bar-fill.ig-bar-amber { background: var(--ig-amber); }
+
+/* ── Focus Callout ───────────────────────────────────────── */
+
+.ig-focus {
+    text-align: center;
+    padding: 36px;
+    background: var(--ig-amber-soft);
+    border: 1px solid var(--ig-amber-border);
+    border-radius: 20px;
+    margin-bottom: 48px;
+}
+
+.ig-focus-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--ig-amber);
+    margin-bottom: 10px;
+}
+
+.ig-focus-text {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--ig-text);
+    line-height: 1.4;
+}
+
+/* ── Timeline Visual ─────────────────────────────────────── */
+
+.ig-timeline {
+    display: flex;
+    gap: 0;
+    margin-bottom: 48px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--ig-border);
+}
+
+.ig-tl-phase {
+    flex: 1;
+    padding: 24px 20px;
+}
+
+.ig-tl-phase.ig-tl-early { background: var(--ig-green-soft); }
+.ig-tl-phase.ig-tl-mid   { background: var(--ig-amber-soft); }
+.ig-tl-phase.ig-tl-late  { background: var(--ig-red-soft); }
+
+.ig-tl-bar {
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    margin-bottom: 12px;
+}
+
+.ig-tl-early .ig-tl-bar { background: var(--ig-green); }
+.ig-tl-mid .ig-tl-bar   { background: var(--ig-amber); }
+.ig-tl-late .ig-tl-bar  { background: var(--ig-red); }
+
+.ig-tl-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 6px;
+}
+
+.ig-tl-early .ig-tl-label { color: var(--ig-green); }
+.ig-tl-mid .ig-tl-label   { color: var(--ig-amber); }
+.ig-tl-late .ig-tl-label  { color: var(--ig-red); }
+
+.ig-tl-text {
+    font-size: 14px;
+    color: var(--ig-text2);
+    line-height: 1.6;
+}
+
+/* ── List Sections (Good / Mistakes / Missed / Tips) ────── */
+
+.ig-list-section {
+    margin-bottom: 48px;
+}
+
+.ig-list {
+    list-style: none;
+}
+
+.ig-list-item {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--ig-border-light);
+}
+
+.ig-list-item:last-child {
+    border-bottom: none;
+}
+
+.ig-list-num {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+/* Green accent - good plays */
+.ig-list-green .ig-list-num {
+    background: var(--ig-green-soft);
+    color: var(--ig-green);
+    border: 1px solid var(--ig-green-border);
+}
+
+.ig-list-green .ig-list-heading {
+    color: var(--ig-green);
+}
+
+/* Red accent - mistakes */
+.ig-list-red .ig-list-num {
+    background: var(--ig-red-soft);
+    color: var(--ig-red);
+    border: 1px solid var(--ig-red-border);
+}
+
+.ig-list-red .ig-list-heading {
+    color: var(--ig-red);
+}
+
+/* Amber accent - missed opportunities */
+.ig-list-amber .ig-list-num {
+    background: var(--ig-amber-soft);
+    color: var(--ig-amber);
+    border: 1px solid var(--ig-amber-border);
+}
+
+.ig-list-amber .ig-list-heading {
+    color: var(--ig-amber);
+}
+
+/* Blue accent - tips */
+.ig-list-blue .ig-list-num {
+    background: var(--ig-blue-soft);
+    color: var(--ig-blue);
+    border: 1px solid var(--ig-blue-border);
+}
+
+.ig-list-blue .ig-list-heading {
+    color: var(--ig-blue);
+}
+
+.ig-list-heading {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ig-list-heading-bar {
+    width: 24px;
+    height: 3px;
+    border-radius: 2px;
+}
+
+.ig-list-green .ig-list-heading-bar { background: var(--ig-green); }
+.ig-list-red .ig-list-heading-bar   { background: var(--ig-red); }
+.ig-list-amber .ig-list-heading-bar { background: var(--ig-amber); }
+.ig-list-blue .ig-list-heading-bar  { background: var(--ig-blue); }
+
+.ig-list-text {
+    font-size: 14px;
+    color: var(--ig-text2);
+    line-height: 1.6;
+    padding-top: 5px;
+}
+
+/* ── Clip Grid ───────────────────────────────────────────── */
+
+.ig-clips-section {
+    margin-bottom: 48px;
+}
+
+.ig-clip-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.ig-clip-card {
+    background: var(--ig-surface);
+    border: 1px solid var(--ig-border);
+    border-radius: 14px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+
+.ig-clip-card:hover {
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.ig-clip-video {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 10;
+    background: linear-gradient(135deg, #1a1a17, #2c2c26);
+}
+
+.ig-clip-video .video-player {
+    position: absolute;
+    inset: 0;
+    border-radius: 0;
+}
+
+.ig-clip-badge {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(26, 26, 23, 0.75);
+    padding: 3px 10px;
+    border-radius: 6px;
+    z-index: 2;
+    backdrop-filter: blur(4px);
+}
+
+.ig-clip-type {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    z-index: 2;
+    color: #fff;
+}
+
+.ig-clip-type-tactical { background: var(--ig-blue); }
+.ig-clip-type-combat   { background: var(--ig-red); }
+.ig-clip-type-mistake  { background: var(--ig-amber); }
+.ig-clip-type-default  { background: var(--ig-text3); }
+
+.ig-clip-time {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    font-family: 'Space Grotesk', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.5);
+    padding: 2px 8px;
+    border-radius: 4px;
+    z-index: 2;
+}
+
+.ig-clip-body {
+    padding: 16px;
+}
+
+.ig-clip-situation {
+    font-size: 13px;
+    color: var(--ig-text2);
+    line-height: 1.6;
+    margin-bottom: 10px;
+}
+
+.ig-clip-good,
+.ig-clip-mistake {
+    font-size: 12px;
+    line-height: 1.5;
+    padding: 8px 12px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+}
+
+.ig-clip-good {
+    background: var(--ig-green-soft);
+    color: var(--ig-green);
+    font-weight: 600;
+    border: 1px solid var(--ig-green-border);
+}
+
+.ig-clip-mistake {
+    background: var(--ig-red-soft);
+    color: var(--ig-red);
+    font-weight: 600;
+    border: 1px solid var(--ig-red-border);
+}
+
+.ig-clip-tip {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--ig-blue);
+    padding: 8px 12px;
+    background: var(--ig-blue-soft);
+    border-radius: 8px;
+    border: 1px solid var(--ig-blue-border);
+}
+
+/* ── Tab Bar ─────────────────────────────────────────────── */
+
+.ig-tabs {
+    display: flex;
+    gap: 4px;
+    padding: 4px;
+    background: var(--ig-surface);
+    border: 1px solid var(--ig-border);
+    border-radius: 12px;
+    margin-bottom: 32px;
+}
+
+.ig-tab {
+    flex: 1;
+    padding: 10px 20px;
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    color: var(--ig-text3);
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.ig-tab:hover {
+    color: var(--ig-text2);
+    background: var(--ig-bg);
+}
+
+.ig-tab.active {
+    color: var(--ig-text);
+    background: var(--ig-bg);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+/* ── Tab Content ─────────────────────────────────────────── */
+
+.ig-tab-content {
+    display: none;
+}
+
+.ig-tab-content.active {
+    display: block;
+}
+
+/* ── Coach Review - Full-Width Video with Overlay ────────── */
+
+.ig-coach-review-section {
+    margin-bottom: 48px;
+}
+
+.ig-coach-video-wrap {
+    position: relative;
+    border-radius: 16px 16px 0 0;
+    overflow: hidden;
+    background: #000;
+    border: 1px solid var(--ig-border);
+    border-bottom: none;
+}
+
+
+.ig-coach-video-wrap .video-player {
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 0;
+}
+
+.ig-full-video-info {
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--ig-surface);
+    border: 1px solid var(--ig-border);
+    border-top: none;
+    border-radius: 0 0 16px 16px;
+}
+
+/* Remove bottom radius when moments list follows */
+.ig-full-video-info:has(+ .ig-coach-moments) {
+    border-radius: 0;
+    border-bottom: none;
+}
+
+.ig-full-video-title {
+    font-family: 'Space Grotesk', 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--ig-text);
+}
+
+.ig-full-video-meta {
+    font-size: 12px;
+    color: var(--ig-text3);
+}
+
+/* ── Coaching Moments List ───────────────────────────────── */
+
+.ig-coach-moments {
+    background: var(--ig-surface);
+    border: 1px solid var(--ig-border);
+    border-top: none;
+    border-radius: 0 0 16px 16px;
+    padding: 12px 16px 16px;
+}
+
+.ig-coach-moments-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--ig-text3);
+    margin-bottom: 8px;
+}
+
+.ig-coach-moment-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.ig-coach-moment-item:hover {
+    background: var(--ig-border-light);
+}
+
+.ig-coach-moment-item.active {
+    background: rgba(167, 139, 250, 0.1);
+}
+
+.ig-coach-moment-item.passed {
+    opacity: 0.5;
+}
+
+.ig-coach-moment-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.ig-coach-moment-item.ig-hl-mistake .ig-coach-moment-dot    { background: #f87171; }
+.ig-coach-moment-item.ig-hl-missed .ig-coach-moment-dot     { background: #fbbf24; }
+.ig-coach-moment-item.ig-hl-good .ig-coach-moment-dot       { background: #34d399; }
+.ig-coach-moment-item.ig-hl-critical .ig-coach-moment-dot   { background: #a78bfa; }
+.ig-coach-moment-item.ig-hl-default .ig-coach-moment-dot    { background: #9a9a8f; }
+
+.ig-coach-moment-time {
+    font-family: 'Space Grotesk', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ig-text3);
+    flex-shrink: 0;
+    min-width: 36px;
+}
+
+.ig-coach-moment-title {
+    font-size: 13px;
+    color: var(--ig-text2);
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ig-coach-moment-type {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--ig-text3);
+    flex-shrink: 0;
+}
+
+
+/* ── Footer ──────────────────────────────────────────────── */
+
+.ig-footer {
+    text-align: center;
+    padding: 40px 0 0;
+    font-size: 12px;
+    color: var(--ig-text3);
+    border-top: 1px solid var(--ig-border);
+}
+
+/* ── Animations ──────────────────────────────────────────── */
+
+@keyframes ig-ring-fill {
+    from { stroke-dashoffset: var(--ig-ring-circumference); }
+    to   { stroke-dashoffset: var(--ig-ring-target-offset); }
+}
+
+@keyframes ig-fade-up {
+    from {
+        opacity: 0;
+        transform: translateY(16px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ig-animate-in {
+    opacity: 0;
+    transform: translateY(16px);
+}
+
+.ig-animate-in.ig-visible {
+    animation: ig-fade-up 0.5s ease forwards;
+}
+
+/* ── Coach Popup Overlay (page-level, triggers during playback) ── */
+
+.coach-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1500;
+    background: transparent;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.coach-backdrop.visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+}
+
+/* ── Coach Popup: structure ──
+   .coach-popup
+     .coach-popup-row      ← always visible: avatar, type, time, title, expand, continue
+     .coach-popup-details   ← expandable: text + suggestion (hidden on mobile)
+*/
+
+.coach-popup {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1501;
+    background: rgba(15, 15, 15, 0.92);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    transform: translateY(100%);
+    transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 14px 24px;
+}
+
+.coach-popup.visible {
+    transform: translateY(0);
+}
+
+/* Row 1: always-visible bar */
+.coach-popup-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.coach-popup-avatar {
+    flex-shrink: 0;
+    width: 44px;
+    height: 56px;
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.4));
+}
+
+.coach-popup-avatar .ig-coach-svg {
+    width: 44px;
+    height: 56px;
+}
+
+.coach-popup.visible .ig-coach-speech-lines {
+    animation: coach-speak-lines 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes coach-speak-lines {
+    from { opacity: 0.3; }
+    to { opacity: 1; }
+}
+
+.coach-popup-type {
+    flex-shrink: 0;
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    color: #fff;
+    white-space: nowrap;
+}
+
+.coach-popup-type.ig-hl-mistake    { background: #ef4444; }
+.coach-popup-type.ig-hl-missed     { background: #f59e0b; }
+.coach-popup-type.ig-hl-good       { background: #22c55e; }
+.coach-popup-type.ig-hl-critical   { background: #8b5cf6; }
+.coach-popup-type.ig-hl-default    { background: #9a9a8f; }
+
+.coach-popup-time {
+    flex-shrink: 0;
+    font-family: 'Space Grotesk', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.4);
+    white-space: nowrap;
+}
+
+.coach-popup-title {
+    flex: 1;
+    min-width: 0;
+    font-size: 14px;
+    font-weight: 700;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.coach-popup-dismiss {
+    flex-shrink: 0;
+    font-size: 12px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.6);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 6px;
+    padding: 6px 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.coach-popup-dismiss:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.25);
+}
+
+/* Mobile continue button hidden on desktop */
+.coach-popup-dismiss-mobile {
+    display: none;
+}
+
+/* Expand button: hidden on desktop */
+.coach-popup-expand {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 50%;
+    color: rgba(255, 255, 255, 0.5);
+    cursor: pointer;
+    transition: all 0.2s ease, transform 0.25s ease;
+}
+
+.coach-popup-expand:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: #fff;
+}
+
+.coach-popup.expanded .coach-popup-expand {
+    transform: rotate(180deg);
+}
+
+/* Row 2: details (text + suggestion) - visible on desktop */
+.coach-popup-details {
+    margin-top: 8px;
+    padding-left: 56px; /* align with content after avatar */
+}
+
+.coach-popup-text {
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.65);
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.coach-popup-text:empty { display: none; }
+
+.coach-popup-suggestion {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #c4b5fd;
+    font-style: italic;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.coach-popup-suggestion:empty { display: none; }
+
+/* ── Responsive: Tablet ──────────────────────────────────── */
+
+@media (max-width: 768px) {
+    .ig-page {
+        padding: 32px 16px 120px;
+    }
+
+    .ig-header {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+        padding: 16px;
+    }
+
+    .ig-header-right {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .ig-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+
+    .ig-ring-wrap {
+        width: 160px;
+        height: 160px;
+    }
+
+    .ig-ring-grade {
+        font-size: 44px;
+    }
+
+    .ig-timeline {
+        flex-direction: column;
+    }
+
+    .ig-clip-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .ig-full-video-info {
+        flex-direction: column;
+        gap: 4px;
+        text-align: center;
+    }
+
+    .ig-focus-text {
+        font-size: 18px;
+    }
+
+    .ig-grade-reason {
+        font-size: 14px;
+    }
+
+    /* Coach bar: compact on tablet */
+    .coach-popup {
+        padding: 10px 16px;
+    }
+
+    .coach-popup-row { gap: 8px; }
+
+    .coach-popup-avatar { width: 32px; height: 40px; }
+    .coach-popup-avatar .ig-coach-svg { width: 32px; height: 40px; }
+    .coach-popup-title { font-size: 13px; }
+    .coach-popup-details { display: none; padding-left: 40px; }
+    .coach-popup-expand { display: flex; }
+    .coach-popup-dismiss-desktop { display: none; }
+    .coach-popup-dismiss-mobile { display: block; margin-top: 8px; width: 100%; text-align: center; }
+
+    /* Expanded: show details */
+    .coach-popup.expanded .coach-popup-details { display: block; }
+}
+
+/* ── Responsive: Mobile ──────────────────────────────────── */
+
+@media (max-width: 480px) {
+    .ig-page {
+        padding: 20px 12px 120px;
+    }
+
+    .ig-stats {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+    }
+
+    .ig-stat-card {
+        padding: 14px 12px;
+    }
+
+    .ig-stat-value {
+        font-size: 22px;
+    }
+
+    .ig-ring-wrap {
+        width: 140px;
+        height: 140px;
+    }
+
+    .ig-ring-grade {
+        font-size: 36px;
+    }
+
+    .ig-header-game {
+        font-size: 16px;
+    }
+
+    .ig-clip-grid {
+        gap: 12px;
+    }
+
+    /* Tabs compact on mobile */
+    .ig-tabs {
+        gap: 2px;
+        padding: 3px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+    }
+
+    .ig-tab {
+        padding: 8px 12px;
+        font-size: 12px;
+    }
+
+    /* Coach bar: compact on mobile */
+    .coach-popup {
+        padding: 8px 10px;
+    }
+
+    .coach-popup-row { gap: 6px; }
+    .coach-popup-avatar { width: 28px; height: 35px; }
+    .coach-popup-avatar .ig-coach-svg { width: 28px; height: 35px; }
+    .coach-popup-type { font-size: 8px; padding: 2px 6px; }
+    .coach-popup-time { font-size: 10px; }
+    .coach-popup-title { font-size: 12px; }
+    .coach-popup-expand { width: 24px; height: 24px; }
+    .coach-popup-dismiss-desktop { display: none; }
+    .coach-popup-dismiss-mobile { display: block; margin-top: 6px; width: 100%; text-align: center; font-size: 12px; padding: 8px; }
+    .coach-popup-details { display: none; padding-left: 34px; }
+
+    /* Expanded: show details */
+    .coach-popup.expanded .coach-popup-details {
+        display: block;
+    }
+
+    .coach-popup.expanded .coach-popup-text {
+        font-size: 12px;
+        -webkit-line-clamp: unset;
+    }
+
+    .coach-popup.expanded .coach-popup-suggestion {
+        font-size: 11px;
+        white-space: normal;
+    }
+
+    /* Coaching moments compact */
+    .ig-coach-moment-item {
+        padding: 6px 8px;
+        gap: 6px;
+    }
+
+    .ig-coach-moment-type {
+        display: none;
+    }
+
+    .ig-coach-moment-title {
+        font-size: 12px;
+    }
+
+    .ig-coach-moments-label {
+        font-size: 9px;
+    }
+}
+
+    </style>
+    <script>window.SESSION_ID = "20260205_193139";</script>
+</head>
+<body data-theme="infographic">
+
+    <!-- Loading state -->
+    <div id="loader">
+        <div class="loader-ring"></div>
+        <div class="loader-text">Loading report...</div>
+    </div>
+
+    <!-- Report content (rendered dynamically by JS) -->
+    <main id="app"></main>
+
+    <!-- Video overlay (bottom popup for timestamp clicks) -->
+    <div id="video-overlay">
+        <div class="vo-container">
+            <div class="vo-video">
+                <video id="vo-player" preload="metadata" playsinline></video>
+                <audio id="vo-audio" preload="auto"></audio>
+
+                <!-- Custom video controls -->
+                <div class="vp-controls-wrap">
+                    <div class="vp-seek-row">
+                        <input type="range" class="vp-seek" id="vo-seek" min="0" max="100" value="0" step="0.1">
+                    </div>
+                    <div class="vp-btn-row">
+                        <button class="vp-btn" onclick="window.toggleVideoPlay()" title="Play/Pause">
+                            <svg id="vo-play-icon" class="vp-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,3 20,12 6,21"/></svg>
+                        </button>
+                        <div class="vp-time">
+                            <span id="vo-current-time">0:00</span>
+                            <span class="vp-time-sep">/</span>
+                            <span id="vo-duration">0:00</span>
+                        </div>
+                        <div class="vp-spacer"></div>
+                        <button id="vo-audio-btn" class="vp-btn vp-audio-btn" onclick="window.toggleAudio()" title="Mute audio">
+                            <svg id="vo-audio-icon" class="vp-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 8.5v7a4.49 4.49 0 002.5-3.5zM14 3.23v2.06a7.007 7.007 0 010 13.42v2.06A9.013 9.013 0 0014 3.23z"/></svg>
+                        </button>
+                        <button class="vp-btn" onclick="window.toggleFullscreen()" title="Fullscreen">
+                            <svg class="vp-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                        </button>
+                        <button class="vp-btn" onclick="window.downloadVideo()" title="Download">
+                            <svg class="vp-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="vo-info">
+                <div class="vo-header">
+                    <div class="vo-title" id="vo-title">Clip Preview</div>
+                    <button class="vo-close" onclick="window.closeVideoOverlay()">Close &#10005;</button>
+                </div>
+                <div class="vo-text" id="vo-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Renderer + App (inlined) -->
+    <script>
+/**
+ * Infographic Theme - Match Coach Report
+ *
+ * Light theme, single scrolling page with data-visualization aesthetic.
+ * SVG ring chart for grade, horizontal progress bars, clip grid with video players.
+ * Includes Coach Highlights section for timestamped coaching moments.
+ *
+ * Globals:
+ *   window.renderInfographic(report, ctx) -> HTML string
+ *   window.initInfographic(report, ctx)   -> post-render animations
+ */
+
+(function () {
+    'use strict';
+
+    // ── Grade mapping ──────────────────────────────────────────
+    var GRADE_MAP = {
+        'A+': 100, 'A': 95, 'A-': 90,
+        'B+': 85,  'B': 80, 'B-': 75,
+        'C+': 70,  'C': 65, 'C-': 60,
+        'D+': 55,  'D': 50, 'D-': 45,
+        'F': 30
+    };
+
+    function gradeToPercent(grade) {
+        if (!grade) return 50;
+        var key = grade.trim().toUpperCase();
+        return GRADE_MAP[key] !== undefined ? GRADE_MAP[key] : 50;
+    }
+
+    function gradeColor(grade) {
+        if (!grade) return 'var(--ig-text3)';
+        var first = grade.trim().toUpperCase().charAt(0);
+        if (first === 'A' || first === 'B') return 'var(--ig-ring-green)';
+        if (first === 'C') return 'var(--ig-ring-amber)';
+        return 'var(--ig-ring-red)';
+    }
+
+    // ── Helpers ────────────────────────────────────────────────
+
+    function esc(str) {
+        if (!str) return '';
+        return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function safe(val, fallback) {
+        return (val !== undefined && val !== null && val !== '') ? val : (fallback || '');
+    }
+
+    function clipTypeClass(type) {
+        if (!type) return 'ig-clip-type-default';
+        var t = type.toLowerCase();
+        if (t === 'tactical') return 'ig-clip-type-tactical';
+        if (t === 'combat') return 'ig-clip-type-combat';
+        if (t === 'mistake') return 'ig-clip-type-mistake';
+        return 'ig-clip-type-default';
+    }
+
+    function highlightTypeLabel(type) {
+        if (!type) return '';
+        return type.replace(/_/g, ' ');
+    }
+
+    function highlightTypeClass(type) {
+        if (!type) return 'ig-hl-default';
+        var t = type.toLowerCase();
+        if (t === 'mistake') return 'ig-hl-mistake';
+        if (t === 'missed_opportunity') return 'ig-hl-missed';
+        if (t === 'good_play') return 'ig-hl-good';
+        if (t === 'critical_moment') return 'ig-hl-critical';
+        return 'ig-hl-default';
+    }
+
+    function formatTimestamp(seconds) {
+        var m = Math.floor(seconds / 60);
+        var s = Math.floor(seconds % 60);
+        return m + ':' + (s < 10 ? '0' : '') + s;
+    }
+
+    // ── SVG Ring Builder ───────────────────────────────────────
+
+    function buildGradeRing(grade) {
+        var pct = gradeToPercent(grade);
+        var color = gradeColor(grade);
+        var radius = 86;
+        var circumference = 2 * Math.PI * radius;
+        var targetOffset = circumference - (circumference * pct / 100);
+
+        return '' +
+            '<div class="ig-ring-wrap">' +
+                '<svg viewBox="0 0 200 200">' +
+                    '<circle class="ig-ring-bg" cx="100" cy="100" r="' + radius + '"/>' +
+                    '<circle class="ig-ring-fg" cx="100" cy="100" r="' + radius + '"' +
+                        ' style="stroke:' + color + ';' +
+                        'stroke-dasharray:' + circumference + ';' +
+                        'stroke-dashoffset:' + circumference + '"' +
+                        ' data-target-offset="' + targetOffset + '"' +
+                        ' data-circumference="' + circumference + '"/>' +
+                '</svg>' +
+                '<div class="ig-ring-label">' +
+                    '<div class="ig-ring-grade" style="color:' + color + '">' + esc(grade) + '</div>' +
+                    '<div class="ig-ring-pct">' + pct + '%</div>' +
+                '</div>' +
+            '</div>';
+    }
+
+    // ── Numbered list builder ──────────────────────────────────
+
+    function buildList(items, accentClass, heading, barColor, audioContext) {
+        if (!items || items.length === 0) return '';
+
+        audioContext = audioContext || 'full';
+
+        var html = '<div class="ig-list-section ig-animate-in">' +
+            '<div class="ig-list-heading ' + accentClass + '">' +
+                '<span class="ig-list-heading-bar"></span>' +
+                esc(heading) +
+            '</div>' +
+            '<ul class="ig-list ' + accentClass + '">';
+
+        for (var i = 0; i < items.length; i++) {
+            var finalIndex = (audioContext === 'goodplay' || audioContext === 'mistake') ? i : null;
+            html += '<li class="ig-list-item">' +
+                '<div class="ig-list-num">' + (i + 1) + '</div>' +
+                '<div class="ig-list-text">' + window.makeTimestampsClickable(items[i], 10, audioContext, finalIndex) + '</div>' +
+            '</li>';
+        }
+
+        html += '</ul></div>';
+        return html;
+    }
+
+    // ── Coach SVG Avatar Builder ────────────────────────────────
+
+    function buildCoachSVG() {
+        return '<svg class="ig-coach-svg" viewBox="0 0 120 160" xmlns="http://www.w3.org/2000/svg">' +
+            // Glow effect
+            '<defs>' +
+                '<radialGradient id="coachGlow" cx="50%" cy="40%" r="50%">' +
+                    '<stop offset="0%" stop-color="#a78bfa" stop-opacity="0.3"/>' +
+                    '<stop offset="100%" stop-color="#a78bfa" stop-opacity="0"/>' +
+                '</radialGradient>' +
+                '<linearGradient id="shirtGrad" x1="0" y1="0" x2="0" y2="1">' +
+                    '<stop offset="0%" stop-color="#6c5ce7"/>' +
+                    '<stop offset="100%" stop-color="#5a4bd1"/>' +
+                '</linearGradient>' +
+            '</defs>' +
+            '<circle class="ig-coach-glow" cx="60" cy="65" r="55" fill="url(#coachGlow)"/>' +
+            // Body / torso
+            '<path class="ig-coach-body" d="M30,110 C30,90 40,85 60,82 C80,85 90,90 90,110 L90,155 C90,158 87,160 84,160 L36,160 C33,160 30,158 30,155 Z" fill="url(#shirtGrad)"/>' +
+            // Collar
+            '<path d="M50,84 L60,95 L70,84" fill="none" stroke="#4a3fc0" stroke-width="2" stroke-linecap="round"/>' +
+            // Whistle lanyard
+            '<path d="M55,84 Q52,100 48,108" fill="none" stroke="#e0ddd5" stroke-width="1.5" stroke-linecap="round"/>' +
+            '<circle cx="47" cy="110" r="4" fill="#e0ddd5"/>' +
+            '<circle cx="47" cy="110" r="2" fill="#c8c5bb"/>' +
+            // Clipboard arm (left)
+            '<path d="M30,105 Q20,108 18,120 L18,140 Q18,144 22,144 L38,144 Q42,144 42,140 L42,120 Q42,112 35,108" fill="#4a3fc0" stroke="#3d32a8" stroke-width="1"/>' +
+            '<rect x="20" y="122" width="20" height="18" rx="2" fill="#f0efe8" stroke="#d5d4cc" stroke-width="1"/>' +
+            '<line x1="24" y1="128" x2="36" y2="128" stroke="#c8c5bb" stroke-width="1"/>' +
+            '<line x1="24" y1="132" x2="33" y2="132" stroke="#c8c5bb" stroke-width="1"/>' +
+            '<line x1="24" y1="136" x2="30" y2="136" stroke="#c8c5bb" stroke-width="1"/>' +
+            // Right arm
+            '<path d="M90,105 Q100,110 98,125" fill="none" stroke="#4a3fc0" stroke-width="8" stroke-linecap="round"/>' +
+            // Head
+            '<g class="ig-coach-head">' +
+                '<circle cx="60" cy="50" r="28" fill="#f5d0a9"/>' +
+                // Hair
+                '<path d="M32,45 Q32,20 60,18 Q88,20 88,45 Q85,30 60,28 Q35,30 32,45 Z" fill="#3d2914"/>' +
+                '<path d="M32,45 Q30,38 35,32" fill="none" stroke="#3d2914" stroke-width="4" stroke-linecap="round"/>' +
+                '<path d="M88,45 Q90,38 85,32" fill="none" stroke="#3d2914" stroke-width="4" stroke-linecap="round"/>' +
+                // Eyebrows
+                '<path d="M44,40 Q48,37 52,40" fill="none" stroke="#3d2914" stroke-width="2" stroke-linecap="round"/>' +
+                '<path d="M68,40 Q72,37 76,40" fill="none" stroke="#3d2914" stroke-width="2" stroke-linecap="round"/>' +
+                // Eyes
+                '<circle cx="48" cy="47" r="3" fill="#2c1810"/>' +
+                '<circle cx="72" cy="47" r="3" fill="#2c1810"/>' +
+                '<circle cx="49" cy="46" r="1" fill="#fff"/>' +
+                '<circle cx="73" cy="46" r="1" fill="#fff"/>' +
+                // Mouth
+                '<path class="ig-coach-mouth" d="M52,60 Q60,65 68,60" fill="none" stroke="#c0755a" stroke-width="2" stroke-linecap="round"/>' +
+            '</g>' +
+            // Speech indicator lines (hidden by default, visible when speaking)
+            '<g class="ig-coach-speech-lines">' +
+                '<line x1="95" y1="35" x2="105" y2="30" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" opacity="0.7"/>' +
+                '<line x1="97" y1="45" x2="108" y2="45" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" opacity="0.5"/>' +
+                '<line x1="95" y1="55" x2="105" y2="60" stroke="#a78bfa" stroke-width="2" stroke-linecap="round" opacity="0.7"/>' +
+            '</g>' +
+        '</svg>';
+    }
+
+    // ── Render function ────────────────────────────────────────
+
+    window.renderInfographic = function (report, ctx) {
+        if (!report) return '<div class="ig-page"><p>No report data available.</p></div>';
+
+        var fa = report.final_analysis || {};
+        var clips = report.clips || [];
+        var highlights = report.highlights || [];
+        var config = report.config || {};
+        var grade = safe(fa.grade, '?');
+        var timeline = fa.timeline || {};
+
+        var html = '<div class="ig-page">';
+
+        // ── 1. Header Bar ──────────────────────────────────────
+        var durationStr = ctx.formatDuration ? ctx.formatDuration(report.duration_seconds || 0) : (report.duration_seconds || 0) + 's';
+        var clipsCount = report.clips_analyzed || clips.length || 0;
+
+        html += '<div class="ig-header ig-animate-in">' +
+            '<div class="ig-header-left">' +
+                '<div class="ig-header-game">' + esc(safe(report.game_name, 'Match Report')) + '</div>' +
+                '<div class="ig-header-meta">Session ' + esc(safe(report.session_id, ctx.sessionId)) + '</div>' +
+            '</div>' +
+            '<div class="ig-header-right">' +
+                '<div class="ig-header-badge">Match Coach</div>' +
+                '<div class="ig-header-stats">' + esc(durationStr) + ' &middot; ' + clipsCount + ' clips</div>' +
+            '</div>' +
+        '</div>';
+
+        // ── Tab Bar ────────────────────────────────────────────
+        html += '<div class="ig-tabs">';
+        html += '<button class="ig-tab active" data-tab="coach" onclick="window.switchTab(\'coach\')">Coach</button>';
+        html += '<button class="ig-tab" data-tab="report" onclick="window.switchTab(\'report\')">Detailed Report</button>';
+        html += '</div>';
+
+        // ══════════════════════════════════════════════════════════
+        // TAB 1: COACH VIEW (video + grade + brief summary)
+        // ══════════════════════════════════════════════════════════
+        html += '<div class="ig-tab-content active" id="tab-coach">';
+
+        // Grade Ring + Result + Reason (compact)
+        html += '<div class="ig-grade-section ig-animate-in">';
+        html += buildGradeRing(grade);
+
+        if (fa.match_result) {
+            html += '<div class="ig-match-result">' + esc(fa.match_result) + '</div>';
+        }
+
+        if (fa.grade_reason) {
+            html += '<div class="ig-grade-reason">' + esc(fa.grade_reason) + '</div>';
+        }
+
+        html += '</div>';
+
+        // Primary Focus Callout
+        if (fa.primary_focus) {
+            html += '<div class="ig-focus ig-animate-in">' +
+                '<div class="ig-focus-label">Your #1 Priority</div>' +
+                '<div class="ig-focus-text">' + esc(fa.primary_focus) + '</div>' +
+            '</div>';
+        }
+
+        // Coach Review - Full-Width Video
+        html += '<div class="ig-coach-review-section ig-animate-in">';
+        html += '<div class="ig-section-title">Coach Review</div>';
+
+        html += '<div class="ig-coach-video-wrap">';
+        html += '<div class="video-player" data-src="' + esc(ctx.fullVideoUrl()) + '" data-full-video="true"></div>';
+        html += '<audio id="coach-audio" preload="auto"></audio>';
+        html += '</div>';
+
+        html += '<div class="ig-full-video-info">' +
+            '<span class="ig-full-video-title">Full Match Recording</span>' +
+            '<span class="ig-full-video-meta">' +
+                esc(durationStr) +
+                (config.deep_interval ? ' &middot; ' + config.deep_interval + 's interval' : '') +
+            '</span>' +
+        '</div>';
+
+        // Coaching moments list below video
+        if (highlights.length > 0) {
+            html += '<div class="ig-coach-moments">';
+            html += '<div class="ig-coach-moments-label">Coaching Moments</div>';
+            for (var k = 0; k < highlights.length; k++) {
+                var hm = highlights[k];
+                var hmTypeClass = highlightTypeClass(hm.type);
+                var hmTimeStr = formatTimestamp(hm.timestamp || 0);
+                html += '<div class="ig-coach-moment-item ' + hmTypeClass + '" onclick="window.seekFullVideo(' + (hm.timestamp || 0) + ')">';
+                html += '<span class="ig-coach-moment-dot"></span>';
+                html += '<span class="ig-coach-moment-time">' + esc(hmTimeStr) + '</span>';
+                html += '<span class="ig-coach-moment-title">' + esc(hm.title || '') + '</span>';
+                html += '<span class="ig-coach-moment-type">' + esc(highlightTypeLabel(hm.type)) + '</span>';
+                html += '</div>';
+            }
+            html += '</div>';
+        }
+
+        html += '</div>'; // close ig-coach-review-section
+
+        html += '</div>'; // close #tab-coach
+
+        // ══════════════════════════════════════════════════════════
+        // TAB 2: DETAILED REPORT (timeline, analysis, clips)
+        // ══════════════════════════════════════════════════════════
+        html += '<div class="ig-tab-content" id="tab-report">';
+
+        // Timeline
+        if (timeline.early || timeline.mid || timeline.late) {
+            html += '<div class="ig-section-title ig-animate-in">Match Timeline</div>';
+            html += '<div class="ig-timeline ig-animate-in">';
+
+            html += buildTimelinePhase('ig-tl-early', 'Early', timeline.early);
+            html += buildTimelinePhase('ig-tl-mid', 'Mid', timeline.mid);
+            html += buildTimelinePhase('ig-tl-late', 'Late', timeline.late);
+
+            html += '</div>';
+        }
+
+        // Good Plays
+        if (fa.good_plays && fa.good_plays.length > 0) {
+            html += '<div class="ig-section-title ig-animate-in">Good Plays</div>';
+            html += buildList(fa.good_plays, 'ig-list-green', 'Best Plays', null, 'goodplay');
+        }
+
+        // Mistakes
+        if (fa.mistakes && fa.mistakes.length > 0) {
+            html += '<div class="ig-section-title ig-animate-in">Mistakes</div>';
+            html += buildList(fa.mistakes, 'ig-list-red', 'Critical Mistakes', null, 'mistake');
+        }
+
+        // Missed Opportunities
+        if (fa.missed_opportunities && fa.missed_opportunities.length > 0) {
+            html += '<div class="ig-section-title ig-animate-in">Missed Opportunities</div>';
+            html += buildList(fa.missed_opportunities, 'ig-list-amber', 'Missed Opportunities', null, 'full');
+        }
+
+        // Tips for Next Match
+        if (fa.next_match_tips && fa.next_match_tips.length > 0) {
+            html += '<div class="ig-section-title ig-animate-in">Improvement Plan</div>';
+            html += buildList(fa.next_match_tips, 'ig-list-blue', 'Tips for Next Match', null, 'full');
+        }
+
+        html += '<div class="ig-divider"></div>';
+
+        // Clips Section
+        if (clips.length > 0) {
+            html += '<div class="ig-clips-section">';
+            html += '<div class="ig-section-title ig-animate-in">Clip Analysis</div>';
+            html += '<div class="ig-clip-grid">';
+
+            for (var i = 0; i < clips.length; i++) {
+                html += buildClipCard(clips[i], ctx);
+            }
+
+            html += '</div></div>';
+        }
+
+        html += '</div>'; // close #tab-report
+
+        // ── Footer ─────────────────────────────────────────────
+        html += '<div class="ig-footer ig-animate-in">' +
+            'Match Coach Report &middot; Powered by 6labs.ai &middot; Session ' +
+            esc(safe(report.session_id, ctx.sessionId)) +
+        '</div>';
+
+        html += '</div>'; // close .ig-page
+
+        // ── Coach Bar (full-width bottom strip when highlight triggers) ──
+        html += '<div class="coach-backdrop" id="coach-backdrop"></div>';
+        html += '<div class="coach-popup" id="coach-popup">';
+        // Row 1: always visible - avatar, type/time, title, expand
+        html += '<div class="coach-popup-row">';
+        html += '<div class="coach-popup-avatar">' + buildCoachSVG() + '</div>';
+        html += '<span class="coach-popup-type" id="coach-popup-type"></span>';
+        html += '<span class="coach-popup-time" id="coach-popup-time"></span>';
+        html += '<span class="coach-popup-title" id="coach-popup-title"></span>';
+        html += '<button class="coach-popup-expand" onclick="window.toggleCoachExpand()" title="Show details">';
+        html += '<svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 8l4-4 4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        html += '</button>';
+        // Continue button: inline on desktop, hidden here on mobile
+        html += '<button class="coach-popup-dismiss coach-popup-dismiss-desktop" onclick="window.dismissCoach()">Continue</button>';
+        html += '</div>';
+        // Row 2: expandable details (hidden on mobile by default)
+        html += '<div class="coach-popup-details">';
+        html += '<div class="coach-popup-text" id="coach-popup-text"></div>';
+        html += '<div class="coach-popup-suggestion" id="coach-popup-suggestion"></div>';
+        html += '</div>';
+        // Continue button: full-width below details on mobile
+        html += '<button class="coach-popup-dismiss coach-popup-dismiss-mobile" onclick="window.dismissCoach()">Continue</button>';
+        html += '</div>';
+
+        return html;
+    };
+
+    // ── Stat card builder ──────────────────────────────────────
+
+    function buildStatCard(value, label, barClass, barPercent) {
+        return '<div class="ig-stat-card">' +
+            '<div class="ig-stat-value">' + esc(value) + '</div>' +
+            '<div class="ig-stat-label">' + esc(label) + '</div>' +
+            '<div class="ig-stat-bar">' +
+                '<div class="ig-stat-bar-fill ' + barClass + '" data-width="' + barPercent + '"></div>' +
+            '</div>' +
+        '</div>';
+    }
+
+    // ── Timeline phase builder ─────────────────────────────────
+
+    function buildTimelinePhase(phaseClass, label, text) {
+        return '<div class="ig-tl-phase ' + phaseClass + '">' +
+            '<div class="ig-tl-bar"></div>' +
+            '<div class="ig-tl-label">' + esc(label) + '</div>' +
+            '<div class="ig-tl-text">' + esc(safe(text, 'No data for this phase.')) + '</div>' +
+        '</div>';
+    }
+
+    // ── Clip card builder ──────────────────────────────────────
+
+    function buildClipCard(clip, ctx) {
+        var clipNum = clip.clip_number || 0;
+        var startTime = clip.start_time || 0;
+        var endTime = clip.end_time || 0;
+        var duration = endTime - startTime;
+        var timeLabel = ctx.formatTime ? ctx.formatTime(startTime) + ' - ' + ctx.formatTime(endTime) : startTime + 's';
+        var typeClass = clipTypeClass(clip.type);
+
+        var html = '<div class="ig-clip-card ig-animate-in">';
+
+        html += '<div class="ig-clip-video">';
+        html += '<span class="ig-clip-badge">#' + clipNum + '</span>';
+
+        if (clip.type) {
+            html += '<span class="ig-clip-type ' + typeClass + '">' + esc(clip.type) + '</span>';
+        }
+
+        html += '<span class="ig-clip-time">' + esc(timeLabel) + '</span>';
+        html += '<div class="video-player" data-src="' + esc(ctx.clipUrl(clipNum)) + '" data-clip="' + clipNum + '"></div>';
+        html += '</div>';
+
+        html += '<div class="ig-clip-body">';
+
+        if (clip.situation && clip.situation.trim() && clip.situation.toLowerCase() !== 'none') {
+            html += '<div class="ig-clip-situation">' + esc(clip.situation) + '</div>';
+        }
+
+        if (clip.good_play && clip.good_play.trim() && clip.good_play.toLowerCase() !== 'none') {
+            html += '<div class="ig-clip-good">' + esc(clip.good_play) + '</div>';
+        }
+
+        if (clip.mistake && clip.mistake.trim() && clip.mistake.toLowerCase() !== 'none') {
+            html += '<div class="ig-clip-mistake">' + esc(clip.mistake) + '</div>';
+        }
+
+        if (clip.tip && clip.tip.trim() && clip.tip.toLowerCase() !== 'none') {
+            html += '<div class="ig-clip-tip">' + esc(clip.tip) + '</div>';
+        }
+
+        html += '</div>';
+        html += '</div>';
+
+        return html;
+    }
+
+    // ── Tab switching ────────────────────────────────────────────
+
+    window.switchTab = function (tabId) {
+        // Pause all videos and dismiss coach before switching
+        document.querySelectorAll('.video-player video').forEach(function (v) {
+            if (!v.paused) v.pause();
+        });
+        if (window._coachController && window._coachController.isPaused) {
+            window._coachController._clearActive();
+        }
+        var popup = document.getElementById('coach-popup');
+        if (popup) popup.classList.remove('expanded');
+
+        // Update tab buttons
+        var tabs = document.querySelectorAll('.ig-tab');
+        tabs.forEach(function (t) {
+            t.classList.toggle('active', t.getAttribute('data-tab') === tabId);
+        });
+
+        // Update tab content
+        var contents = document.querySelectorAll('.ig-tab-content');
+        contents.forEach(function (c) {
+            c.classList.toggle('active', c.id === 'tab-' + tabId);
+        });
+
+        // Re-trigger animations for newly visible content
+        var activeContent = document.getElementById('tab-' + tabId);
+        if (activeContent && 'IntersectionObserver' in window) {
+            var elements = activeContent.querySelectorAll('.ig-animate-in:not(.ig-visible)');
+            elements.forEach(function (el) {
+                el.classList.add('ig-visible');
+            });
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    // ── Seek full match video to a timestamp ───────────────────
+
+    window.seekFullVideo = function (timestamp) {
+        // Find the full match video player
+        var fullVideoContainer = document.querySelector('.video-player[data-full-video="true"]');
+        if (!fullVideoContainer) return;
+
+        var video = fullVideoContainer.querySelector('video');
+        if (!video) return;
+
+        // Scroll to the video section
+        fullVideoContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+        // Seek and play after a short delay for scroll
+        setTimeout(function () {
+            video.currentTime = timestamp;
+            video.play().catch(function () {});
+        }, 400);
+    };
+
+    // ── Post-render initialization ─────────────────────────────
+
+    window.initInfographic = function (report, ctx) {
+
+        // ── Animate progress bars on scroll ────────────────────
+        var bars = document.querySelectorAll('.ig-stat-bar-fill[data-width]');
+        var animateElements = document.querySelectorAll('.ig-animate-in');
+
+        if ('IntersectionObserver' in window) {
+
+            var fadeObserver = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('ig-visible');
+                        fadeObserver.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+            animateElements.forEach(function (el) {
+                fadeObserver.observe(el);
+            });
+
+            var barObserver = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        var target = entry.target;
+                        var width = target.getAttribute('data-width');
+                        requestAnimationFrame(function () {
+                            target.style.width = width + '%';
+                        });
+                        barObserver.unobserve(target);
+                    }
+                });
+            }, { threshold: 0.3 });
+
+            bars.forEach(function (bar) {
+                barObserver.observe(bar);
+            });
+
+            var ringFg = document.querySelector('.ig-ring-fg');
+            if (ringFg) {
+                var ringObserver = new IntersectionObserver(function (entries) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            var targetOffset = parseFloat(ringFg.getAttribute('data-target-offset'));
+                            requestAnimationFrame(function () {
+                                ringFg.style.strokeDashoffset = targetOffset;
+                            });
+                            ringObserver.unobserve(entry.target);
+                        }
+                    });
+                }, { threshold: 0.3 });
+
+                ringObserver.observe(ringFg);
+            }
+
+        } else {
+            animateElements.forEach(function (el) {
+                el.classList.add('ig-visible');
+            });
+
+            bars.forEach(function (bar) {
+                bar.style.width = bar.getAttribute('data-width') + '%';
+            });
+
+            var ringFg = document.querySelector('.ig-ring-fg');
+            if (ringFg) {
+                ringFg.style.strokeDashoffset = ringFg.getAttribute('data-target-offset');
+            }
+        }
+    };
+
+})();
+
+    </script>
+    <script>
+/**
+ * Match Coach Report - App Controller
+ *
+ * Fetches report data from API, renders the infographic theme,
+ * and manages the Coach Highlight overlay during full match playback.
+ */
+
+(function () {
+    'use strict';
+
+    // ── Config (static export) ──────────────────────────────
+    const SESSION_ID = "20260205_193139";
+    const STATIC_MODE = true;
+
+    window.reportData = null;
+
+    // Embedded report data
+    const EMBEDDED_REPORT = {"session_id": "20260205_193139", "game_name": "Brawl Stars - Showdown (Every Brawler for themselves!)", "game_package": "", "duration_seconds": 40, "total_frames": 40, "clips_analyzed": 4, "clips": [{"clip_number": 1, "start_time": 1, "end_time": 10, "type": "DEFENSIVE", "situation": "Nita (Scared Boy) at full health (8400), no power cubes, super not charged, spawned in the bottom-left corner of the map near a power-up box.", "good_play": "Player immediately started breaking the box for power cubes.", "mistake": "Player took unnecessary damage from Crow while contesting the power-up box. They should have either repositioned to avoid Crow's attacks while still hitting the box, or disengaged after taking initial damage to heal before re-engaging the box.", "threat": "Crow (ranged brawler) was initially to the right, contesting the power-up box.", "tip": "Disengage from contested power-up boxes immediately if you take damage to avoid losing health unnecessarily.", "audio": {"goodplay": {"file": "audio/clip_001_goodplay.mp3", "script": "Player immediately started breaking the box for power cubes.", "duration": 3.5999999999999996, "voice": "en-US-GuyNeural"}, "mistake": {"file": "audio/clip_001_mistake.mp3", "script": "Player took unnecessary damage from Crow while contesting the power-up box. They should have either repositioned to avoid Crow's attacks while still hitting the box, or disengaged after taking initial damage to heal before re-engaging the box.", "duration": 14.8, "voice": "en-US-GuyNeural"}, "full": {"file": "audio/clip_001_full.mp3", "script": "Good play: Player immediately started breaking the box for power cubes.. Mistake: Player took unnecessary damage from Crow while contesting the power-up box. They should have either repositioned to avoid Crow's attacks while still hitting the box, or disengaged after taking initial damage to heal before re-engaging the box.. Tip: Disengage from contested power-up boxes immediately if you take damage to avoid losing health unnecessarily.", "duration": 26.0, "voice": "en-US-GuyNeural"}}}, {"clip_number": 2, "start_time": 11, "end_time": 20, "type": "POSITIONING", "situation": "Player is El Primo, starting at 6400 health with 1 power cube. Engaged Dynamike and Shelly. Currently at 1900 health with 3 power cubes, standing in the toxic gas.", "good_play": "Player successfully eliminated Dynamike and collected power cubes.", "mistake": "After using Super on Shelly, the player moved deeper into the toxic gas instead of repositioning towards the safe zone. This resulted in unnecessary health loss.", "threat": "Low health, surrounded by toxic gas, and an enemy Shelly (Bot 2) is nearby. Another enemy Crow (Bot 9) is also on the map.", "tip": "Move towards the center of the map immediately after your Super to escape the toxic gas and prevent further damage.", "audio": {"goodplay": {"file": "audio/clip_002_goodplay.mp3", "script": "Player successfully eliminated Dynamike and collected power cubes.", "duration": 3.2, "voice": "en-US-GuyNeural"}, "mistake": {"file": "audio/clip_002_mistake.mp3", "script": "After using Super on Shelly, the player moved deeper into the toxic gas instead of repositioning towards the safe zone. This resulted in unnecessary health loss.", "duration": 10.4, "voice": "en-US-GuyNeural"}, "full": {"file": "audio/clip_002_full.mp3", "script": "Good play: Player successfully eliminated Dynamike and collected power cubes.. Mistake: After using Super on Shelly, the player moved deeper into the toxic gas instead of repositioning towards the safe zone. This resulted in unnecessary health loss.. Tip: Move towards the center of the map immediately after your Super to escape the toxic gas and prevent further damage.", "duration": 23.2, "voice": "en-US-GuyNeural"}}}, {"clip_number": 3, "start_time": 21, "end_time": 30, "type": "ENEMY_READ", "situation": "El Primo (Scared Boy) with 2 power cubes and Super charged, health fluctuates between 3300 and 1385, engaging Frank (Bot 6, 6 power cubes, 16400 HP) and Jessie (Bot 4, 3 power cubes, 1872 HP) in the center-left.", "good_play": "None", "mistake": "Player directly engaged a Frank with a significant power cube advantage and then got caught between Frank's Super and Jessie's attacks. Player should have recognized the power difference and disengaged or tried to isolate enemies.", "threat": "Frank (front-left, using Super) and Jessie (bottom-left, attacking).", "tip": "Retreat from Frank immediately when Jessie appears, as you are outnumbered and Frank has his Super ready.", "audio": {"mistake": {"file": "audio/clip_003_mistake.mp3", "script": "Player directly engaged a Frank with a significant power cube advantage and then got caught between Frank's Super and Jessie's attacks. Player should have recognized the power difference and disengaged or tried to isolate enemies.", "duration": 14.0, "voice": "en-US-GuyNeural"}, "full": {"file": "audio/clip_003_full.mp3", "script": "Mistake: Player directly engaged a Frank with a significant power cube advantage and then got caught between Frank's Super and Jessie's attacks. Player should have recognized the power difference and disengaged or tried to isolate enemies.. Tip: Retreat from Frank immediately when Jessie appears, as you are outnumbered and Frank has his Super ready.", "duration": 21.599999999999998, "voice": "en-US-GuyNeural"}}}, {"clip_number": 4, "start_time": 31, "end_time": 40, "type": "DEFENSIVE", "situation": "El Primo at 3944 HP, stunned by Frank's Super and attacked by Jessie's turret, with Frank at 13120 HP and 7 power cubes nearby. After respawn, El Primo is at 4500 HP with Super charged, facing Frank at 11196 HP and 7 power cubes.", "good_play": "None", "mistake": "After respawning, El Primo used his Super to engage a significantly more powerful Frank, leading to immediate re-elimination. He should have retreated to heal and seek a more favorable engagement or power-up.", "threat": "Frank (high HP, high power) directly to the left, also Jessie's turret initially.", "tip": "Retreat to cover and heal immediately after respawning - Frank has a huge power advantage and will easily eliminate you again.", "audio": {"mistake": {"file": "audio/clip_004_mistake.mp3", "script": "After respawning, El Primo used his Super to engage a significantly more powerful Frank, leading to immediate re-elimination. He should have retreated to heal and seek a more favorable engagement or power-up.", "duration": 12.8, "voice": "en-US-GuyNeural"}, "full": {"file": "audio/clip_004_full.mp3", "script": "Mistake: After respawning, El Primo used his Super to engage a significantly more powerful Frank, leading to immediate re-elimination. He should have retreated to heal and seek a more favorable engagement or power-up.. Tip: Retreat to cover and heal immediately after respawning - Frank has a huge power advantage and will easily eliminate you again.", "duration": 22.0, "voice": "en-US-GuyNeural"}}}], "final_analysis": {"grade": "F", "grade_reason": "The player consistently made poor engagement decisions, took unnecessary damage, and failed to prioritize healing and positioning, leading to multiple eliminations in a short match.", "match_result": "Loss - Eliminated (4th place or worse)", "primary_focus": "Situational awareness and engagement decision-making, especially regarding health management and power differences.", "timeline": {"early": "Started as Nita, attempted to break a power-up box but took significant, unnecessary damage from Crow, failing to disengage effectively.", "mid": "Switched to El Primo, successfully eliminated Dynamike. However, immediately after using Super on Shelly, the player moved into the toxic gas, taking avoidable damage. Later, El Primo engaged a Frank with a significant power advantage while being outnumbered by Jessie, leading to elimination.", "late": "El Primo was stunned by Frank's Super and eliminated by Jessie's turret. After respawning, the player immediately used Super to re-engage the powerful Frank without healing, resulting in another quick elimination."}, "good_plays": ["Successfully eliminated Dynamike and collected the power cube (10s-20s)"], "mistakes": ["Took unnecessary damage from Crow while contesting a power-up box (0s-10s). Should have disengaged immediately to preserve health.", "After using Super on Shelly, moved deep into the toxic gas (10s-20s). Should have moved towards the center of the map to escape the gas and heal.", "Directly engaged a Frank with a significant power advantage while outnumbered by Jessie (20s-30s). Should have retreated immediately to avoid a losing fight."], "missed_opportunities": ["Missed the opportunity to preserve health in the early game by not disengaging from Crow.", "Failed to capitalize on the Dynamike kill by immediately moving to safety and healing, instead taking damage from the gas.", "Did not use the respawn time to heal and reposition, instead rushing back into a clearly disadvantageous fight against Frank."], "next_match_tips": ["Disengage from contested power-up boxes immediately if you take damage to avoid losing health unnecessarily.", "After using your Super, assess your surroundings and move towards safety (e.g., the center of the map) to escape toxic gas or dangerous positions.", "Always retreat from fights where you are outnumbered or significantly out-powered, especially if the opponent has their Super ready. Prioritize healing after respawning before re-engaging."], "audio": {"good_plays": [{"file": "audio/final_goodplay_001.mp3", "script": "Successfully eliminated Dynamike and collected the power cube (10s-20s).", "duration": 3.5999999999999996, "voice": "en-US-GuyNeural"}], "mistakes": [{"file": "audio/final_mistake_001.mp3", "script": "Took unnecessary damage from Crow while contesting a power-up box (0s-10s). Should have disengaged immediately to preserve health.", "duration": 7.199999999999999, "voice": "en-US-GuyNeural"}, {"file": "audio/final_mistake_002.mp3", "script": "After using Super on Shelly, moved deep into the toxic gas (10s-20s). Should have moved towards the center of the map to escape the gas and heal.", "duration": 10.799999999999999, "voice": "en-US-GuyNeural"}, {"file": "audio/final_mistake_003.mp3", "script": "Directly engaged a Frank with a significant power advantage while outnumbered by Jessie (20s-30s). Should have retreated immediately to avoid a losing fight.", "duration": 9.2, "voice": "en-US-GuyNeural"}]}}, "highlights": [{"timestamp": 5, "end_timestamp": 7, "type": "mistake", "title": "Contesting box, took damage", "commentary": "At the start, you tried to break the box, but Crow immediately started attacking you. You stayed too long and took unnecessary damage, which puts you at a disadvantage early in the match.", "suggestion": "Disengage from contested power-up boxes immediately if you start taking damage to preserve your health.", "audio": {"file": "audio/highlight_001.mp3", "script": "At the start, you tried to break the box, but Crow immediately started attacking you. You stayed too long and took unnecessary damage, which puts you at a disadvantage early in the match. Next time, Disengage from contested power-up boxes immediately if you start taking damage to preserve your health.", "duration": 20.0, "voice": "en-US-GuyNeural"}}, {"timestamp": 14, "end_timestamp": 18, "type": "mistake", "title": "Bad Super into toxic gas", "commentary": "You eliminated Dynamike, which was good, but then you used your Super on Shelly and landed deep in the toxic gas. This poor positioning led to you taking heavy damage and being eliminated.", "suggestion": "After using your Super, always be aware of your surroundings and move to a safe zone away from the toxic gas.", "audio": {"file": "audio/highlight_002.mp3", "script": "You eliminated Dynamike, which was good, but then you used your Super on Shelly and landed deep in the toxic gas. This poor positioning led to you taking heavy damage and being eliminated. Next time, After using your Super, always be aware of your surroundings and move to a safe zone away from the toxic gas.", "duration": 22.400000000000002, "voice": "en-US-GuyNeural"}}, {"timestamp": 24, "end_timestamp": 30, "type": "mistake", "title": "Engaging overpowered Frank", "commentary": "You engaged Frank who had a significant power cube advantage, and then Jessie joined the fight. You were severely outnumbered and outmatched, leading to your quick defeat.", "suggestion": "Always check enemy power cubes and avoid engaging opponents who have a large power advantage, especially when you are outnumbered.", "audio": {"file": "audio/highlight_003.mp3", "script": "You engaged Frank who had a significant power cube advantage, and then Jessie joined the fight. You were severely outnumbered and outmatched, leading to your quick defeat. Next time, Always check enemy power cubes and avoid engaging opponents who have a large power advantage, especially when you are outnumbered.", "duration": 19.6, "voice": "en-US-GuyNeural"}}, {"timestamp": 37, "end_timestamp": 39, "type": "mistake", "title": "Rushing back after respawn", "commentary": "After respawning, you immediately used your Super to re-engage Frank, who still had a huge power advantage. This aggressive play without healing or assessing the situation led to your instant elimination again.", "suggestion": "After respawning, prioritize healing and finding a safe position before re-engaging, especially against powerful enemies.", "audio": {"file": "audio/highlight_004.mp3", "script": "After respawning, you immediately used your Super to re-engage Frank, who still had a huge power advantage. This aggressive play without healing or assessing the situation led to your instant elimination again. Next time, After respawning, prioritize healing and finding a safe position before re-engaging, especially against powerful enemies.", "duration": 19.6, "voice": "en-US-GuyNeural"}}], "config": {"clip_model": "gemini-2.5-flash", "clip_mode": "video_inline", "deep_interval": 10, "final_model": "gemini-2.5-flash", "highlight_model": "gemini-2.5-flash", "enable_clip_analysis": true, "enable_final_analysis": true, "enable_highlight_analysis": true}};
+
+    // ── URL helpers (relative paths for static) ──────────────
+
+    function clipUrl(clipNum) {
+        const pad = String(clipNum).padStart(3, '0');
+        return `video/clip_${pad}.mp4`;
+    }
+
+    function fullVideoUrl() {
+        return 'video/full_match.mp4';
+    }
+
+    async function fetchReport() {
+        return EMBEDDED_REPORT;
+    }
+
+    // ── Context object passed to renderers ────────────────────
+    function buildContext() {
+        return {
+            sessionId: SESSION_ID,
+            clipUrl: clipUrl,
+            fullVideoUrl: fullVideoUrl,
+            formatTime: formatTime,
+            formatDuration: formatDuration,
+        };
+    }
+
+    // ── Utility helpers ───────────────────────────────────────
+
+    function formatTime(seconds) {
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        return `${m}:${String(s).padStart(2, '0')}`;
+    }
+
+    function formatDuration(totalSeconds) {
+        const m = Math.floor(totalSeconds / 60);
+        const s = totalSeconds % 60;
+        if (m === 0) return `${s} sec`;
+        return `${m} min ${s} sec`;
+    }
+
+    /**
+     * Makes timestamp references clickable.
+     * Handles formats: [0:45], (around 0:12-0:15), (0:20-0:22), etc.
+     * When clicked, opens the video overlay for that timestamp's clip.
+     *
+     * @param {string} text - Text containing timestamp references
+     * @param {number} clipInterval - Seconds per clip (default 10)
+     * @param {string} context - Audio context: 'goodplay', 'mistake', or 'full' (default 'full')
+     * @returns {string} HTML with clickable timestamps (properly escaped)
+     */
+    function makeTimestampsClickable(text, clipInterval = 10, context = 'full', finalIndex = null) {
+        if (!text) return '';
+
+        const escapeHtml = (str) => {
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;');
+        };
+
+        const escaped = escapeHtml(text);
+
+        // Handle comma-separated timestamps like (10s-20s, 20s-30s)
+        let processed = escaped.replace(/\(([^)]+,\s*[^)]+)\)/g, (match, content) => {
+            if (/\d+s/.test(content)) {
+                const parts = content.split(/,\s*/);
+                const clickable = parts.map(part => {
+                    const secMatch = part.match(/(\d+)s/);
+                    if (secMatch) {
+                        const totalSeconds = parseInt(secMatch[1]);
+                        const clipNumber = Math.floor(totalSeconds / clipInterval) + 1;
+                        const finalParam = finalIndex !== null ? `, ${finalIndex}` : ', null';
+                        return `<span class="clickable-timestamp" onclick="window.openVideoOverlay(${clipNumber}, 'Clip ${clipNumber}', '', '${context}'${finalParam})" data-clip="${clipNumber}" data-time="${totalSeconds}" data-context="${context}" data-final-index="${finalIndex}">${part}</span>`;
+                    }
+                    return part;
+                }).join(', ');
+                return `(${clickable})`;
+            }
+            return match;
+        });
+
+        const timestampPattern = /\((?:around\s+)?(\d{1,2}):(\d{2})(?:-\d{1,2}:\d{2})?\)|\[(\d{1,2}):(\d{2})(?:-\d{1,2}:\d{2})?\]|\[(\d{1,3})s(?:-\d{1,3}s)?\]|\((?:around\s+)?(\d{1,3})s(?:-\d{1,3}s)?\)|(?<!\d)(\d{1,2}):(\d{2})(?!\d)/g;
+
+        return processed.replace(timestampPattern, (match, min1, sec1, min2, sec2, secBracket, secOnly, min3, sec3) => {
+            let totalSeconds;
+
+            if (secBracket) {
+                totalSeconds = parseInt(secBracket);
+            } else if (secOnly) {
+                totalSeconds = parseInt(secOnly);
+            } else {
+                const minutes = min1 || min2 || min3;
+                const seconds = sec1 || sec2 || sec3;
+                totalSeconds = parseInt(minutes) * 60 + parseInt(seconds);
+            }
+
+            const clipNumber = Math.floor(totalSeconds / clipInterval) + 1;
+            const finalParam = finalIndex !== null ? `, ${finalIndex}` : ', null';
+            return `<span class="clickable-timestamp" onclick="window.openVideoOverlay(${clipNumber}, 'Clip ${clipNumber}', '', '${context}'${finalParam})" data-clip="${clipNumber}" data-time="${totalSeconds}" data-context="${context}" data-final-index="${finalIndex}">${match}</span>`;
+        });
+    }
+
+    window.makeTimestampsClickable = makeTimestampsClickable;
+
+    // ── Render (infographic only) ─────────────────────────────
+
+    function render() {
+        const app = document.getElementById('app');
+
+        const renderFn = window.renderInfographic;
+        if (!renderFn) {
+            app.innerHTML = `<div class="error-state">
+                <div class="error-icon">?</div>
+                <div class="error-msg">Infographic renderer not loaded.</div>
+            </div>`;
+            return;
+        }
+
+        const ctx = buildContext();
+        app.innerHTML = renderFn(window.reportData, ctx);
+
+        // Post-render initialization
+        const initFn = window.initInfographic;
+        if (initFn) {
+            requestAnimationFrame(() => initFn(window.reportData, ctx));
+        }
+
+        // Setup video players
+        requestAnimationFrame(setupVideoPlayers);
+
+        window.scrollTo(0, 0);
+    }
+
+    // ── Helper functions for coach panel ───────────────────────
+
+    function escapeHtml(str) {
+        if (!str) return '';
+        return String(str)
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+    }
+
+    function highlightTypeClass(type) {
+        if (!type) return 'ig-hl-default';
+        var t = type.toLowerCase();
+        if (t === 'mistake') return 'ig-hl-mistake';
+        if (t === 'missed_opportunity') return 'ig-hl-missed';
+        if (t === 'good_play') return 'ig-hl-good';
+        if (t === 'critical_moment') return 'ig-hl-critical';
+        return 'ig-hl-default';
+    }
+
+    function highlightTypeLabel(type) {
+        if (!type) return '';
+        return type.replace(/_/g, ' ');
+    }
+
+    // ── Coach Highlight Controller ────────────────────────────
+    // Pauses video at highlight timestamps, highlights the active
+    // coaching point in the persistent panel, plays audio, then resumes.
+
+    class CoachHighlightController {
+        constructor(highlights) {
+            this.highlights = highlights || [];
+            this.shownHighlights = new Set();
+            this.videoEl = null;
+            this.isPaused = false;
+            this.activeHighlight = null;
+            this.activeIndex = -1;
+            this.resumeTimer = null;
+            this.audio = null;
+            this.videoDuration = 0;
+            this._skipSeekReset = false;
+        }
+
+        attach(videoEl) {
+            this.videoEl = videoEl;
+            this.audio = document.getElementById('coach-audio');
+
+            const onMetadata = () => {
+                this.videoDuration = videoEl.duration;
+                this._positionHighlightDots();
+            };
+
+            videoEl.addEventListener('loadedmetadata', onMetadata);
+
+            // If metadata already loaded (cached video), position dots now
+            if (videoEl.readyState >= 1 && videoEl.duration) {
+                onMetadata();
+            }
+
+            videoEl.addEventListener('timeupdate', () => {
+                this.check(videoEl.currentTime);
+                this._updateMomentsList(videoEl.currentTime);
+            });
+
+            videoEl.addEventListener('seeked', () => {
+                // Skip reset on programmatic seeks (from resume jumps)
+                if (this._skipSeekReset) {
+                    this._skipSeekReset = false;
+                    return;
+                }
+                // Manual seek: skip past highlights, re-enable future ones
+                const newTime = videoEl.currentTime;
+                for (let i = 0; i < this.highlights.length; i++) {
+                    const h = this.highlights[i];
+                    const key = `${h.timestamp}-${h.type}-${i}`;
+                    if (h.timestamp < newTime - 1) {
+                        this.shownHighlights.add(key); // mark past ones as shown
+                    } else {
+                        this.shownHighlights.delete(key); // re-enable future ones
+                    }
+                }
+                if (this.isPaused) {
+                    this._clearActive();
+                }
+            });
+
+            videoEl.addEventListener('ended', () => {
+                if (this.isPaused) {
+                    this._clearActive();
+                }
+            });
+
+        }
+
+        _positionHighlightDots() {
+            if (!this.videoDuration) return;
+            const container = this.videoEl.closest('.video-player');
+            if (!container) return;
+            const seekRow = container.querySelector('.vp-seek-row');
+            if (!seekRow) return;
+
+            const dots = seekRow.querySelectorAll('.vp-highlight-dot');
+            dots.forEach(dot => {
+                const ts = parseFloat(dot.dataset.timestamp);
+                const pct = (ts / this.videoDuration) * 100;
+                dot.style.left = pct + '%';
+            });
+        }
+
+        _updateMomentsList(currentTime) {
+            if (this.isPaused) return;
+            const items = document.querySelectorAll('.ig-coach-moment-item');
+            items.forEach((el, i) => {
+                const h = this.highlights[i];
+                if (h && currentTime >= h.timestamp) {
+                    el.classList.add('passed');
+                } else {
+                    el.classList.remove('passed');
+                }
+            });
+        }
+
+        check(currentTime) {
+            if (this.isPaused) return;
+
+            for (let i = 0; i < this.highlights.length; i++) {
+                const h = this.highlights[i];
+                const key = `${h.timestamp}-${h.type}-${i}`;
+                if (this.shownHighlights.has(key)) continue;
+
+                // Reached highlight: trigger
+                if (currentTime >= h.timestamp - 0.5) {
+                    this.trigger(h, i, key);
+                    return;
+                }
+
+                break;
+            }
+        }
+
+        /** Trigger: pause video, show popup, play audio */
+        trigger(highlight, index, key) {
+            this.shownHighlights.add(key);
+            this.activeHighlight = highlight;
+            this.activeIndex = index;
+            this.isPaused = true;
+            clearTimeout(this.resumeTimer);
+
+            if (this.videoEl) {
+                // Seek to exact highlight moment if significantly overshot at high speed
+                if (this.videoEl.currentTime - highlight.timestamp > 1.5) {
+                    this._skipSeekReset = true;
+                    this.videoEl.currentTime = highlight.timestamp;
+                }
+                this.videoEl.pause();
+            }
+
+            // Start coach audio
+            let hasAudio = false;
+            if (this.audio && highlight.audio && highlight.audio.file) {
+                hasAudio = true;
+                this.audio.src = `${highlight.audio.file}`;
+                this.audio.onended = () => {
+                    this.resumeTimer = setTimeout(() => this.resume(), 1500);
+                };
+                this.audio.play().catch(() => {
+                    this.audio.onended = null;
+                    this.resumeTimer = setTimeout(() => this.resume(), 8000);
+                });
+            }
+
+            // Show popup + highlight UI
+            this._showPopup(highlight, index);
+
+            const momentItems = document.querySelectorAll('.ig-coach-moment-item');
+            momentItems.forEach(el => el.classList.remove('active'));
+            if (momentItems[index]) momentItems[index].classList.add('active');
+
+            const dots = document.querySelectorAll('.vp-highlight-dot');
+            dots.forEach(el => el.classList.remove('active'));
+            if (dots[index]) dots[index].classList.add('active');
+
+            if (!hasAudio) {
+                this.resumeTimer = setTimeout(() => this.resume(), 8000);
+            }
+        }
+
+        _showPopup(highlight, index) {
+            const backdrop = document.getElementById('coach-backdrop');
+            const popup = document.getElementById('coach-popup');
+            if (!backdrop || !popup) return;
+
+            // Fill content
+            const typeEl = document.getElementById('coach-popup-type');
+            const timeEl = document.getElementById('coach-popup-time');
+            const titleEl = document.getElementById('coach-popup-title');
+            const textEl = document.getElementById('coach-popup-text');
+            const suggestionEl = document.getElementById('coach-popup-suggestion');
+
+            if (typeEl) {
+                typeEl.textContent = highlightTypeLabel(highlight.type);
+                typeEl.className = 'coach-popup-type ' + highlightTypeClass(highlight.type);
+            }
+            if (timeEl) {
+                const m = Math.floor((highlight.timestamp || 0) / 60);
+                const s = Math.floor((highlight.timestamp || 0) % 60);
+                timeEl.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+            }
+            if (titleEl) titleEl.textContent = highlight.title || '';
+            if (textEl) textEl.textContent = highlight.commentary || '';
+            if (suggestionEl) suggestionEl.textContent = highlight.suggestion || '';
+
+            // Show
+            backdrop.classList.add('visible');
+            popup.classList.add('visible');
+        }
+
+        _hidePopup() {
+            const backdrop = document.getElementById('coach-backdrop');
+            const popup = document.getElementById('coach-popup');
+            if (backdrop) backdrop.classList.remove('visible');
+            if (popup) popup.classList.remove('visible');
+        }
+
+        resume() {
+            clearTimeout(this.resumeTimer);
+            this._clearActive();
+            if (!this.videoEl) return;
+            // Just resume playback from current position at current speed
+            this.videoEl.play().catch(() => {});
+        }
+
+        _clearActive() {
+            this.isPaused = false;
+            this.activeHighlight = null;
+            this.activeIndex = -1;
+
+            if (this.audio) {
+                this.audio.onended = null;
+                // Fade out audio over 500ms instead of hard cut
+                if (!this.audio.paused && this.audio.duration) {
+                    const fadeAudio = this.audio;
+                    const fadeStep = () => {
+                        if (fadeAudio.volume > 0.1) {
+                            fadeAudio.volume = Math.max(0, fadeAudio.volume - 0.15);
+                            setTimeout(fadeStep, 60);
+                        } else {
+                            fadeAudio.pause();
+                            fadeAudio.currentTime = 0;
+                            fadeAudio.volume = 1;
+                        }
+                    };
+                    fadeStep();
+                } else {
+                    this.audio.pause();
+                    this.audio.currentTime = 0;
+                }
+            }
+
+            // Hide coach popup overlay
+            this._hidePopup();
+
+            const momentItems = document.querySelectorAll('.ig-coach-moment-item');
+            momentItems.forEach(el => el.classList.remove('active'));
+            const dots = document.querySelectorAll('.vp-highlight-dot');
+            dots.forEach(el => el.classList.remove('active'));
+        }
+
+        reset() {
+            this.shownHighlights.clear();
+            this._clearActive();
+        }
+    }
+
+    // Global dismiss function for the "Continue" button
+    window.dismissCoach = function () {
+        if (window._coachController) {
+            window._coachController.resume();
+        }
+        // Also collapse when dismissing
+        const popup = document.getElementById('coach-popup');
+        if (popup) popup.classList.remove('expanded');
+    };
+
+    // Toggle expand/collapse on mobile coach bar
+    window.toggleCoachExpand = function () {
+        const popup = document.getElementById('coach-popup');
+        if (popup) popup.classList.toggle('expanded');
+    };
+
+    // ── Video player setup ────────────────────────────────────
+
+    function setupVideoPlayers() {
+        document.querySelectorAll('.video-player[data-src]').forEach((container, index) => {
+            if (container.dataset.initialized) return;
+            container.dataset.initialized = 'true';
+
+            const src = container.dataset.src;
+            const clipNum = container.dataset.clip;
+            const isFullVideo = container.dataset.fullVideo === 'true';
+            const videoId = `vp-video-${index}`;
+            const playId = `vp-play-${index}`;
+            const currentTimeId = `vp-current-${index}`;
+            const durationId = `vp-duration-${index}`;
+            const audioId = `vp-audio-${index}`;
+            const audioBtnId = `vp-audio-btn-${index}`;
+
+            // Create video element
+            const video = document.createElement('video');
+            video.id = videoId;
+            video.preload = 'metadata';
+            video.playsInline = true;
+            video.src = src;
+
+            // Create audio element if clip has audio
+            let audio = null;
+            if (clipNum && window.reportData && window.reportData.clips) {
+                const clip = window.reportData.clips.find(c => c.clip_number === parseInt(clipNum));
+                if (clip && clip.audio && clip.audio.full) {
+                    audio = document.createElement('audio');
+                    audio.id = audioId;
+                    audio.preload = 'auto';
+                    audio.src = `${clip.audio.full.file}`;
+                }
+            }
+
+            // Create custom controls with SVG icons + seek bar
+            const controlsWrap = document.createElement('div');
+            controlsWrap.className = 'vp-controls-wrap';
+
+            let controlsHTML = `
+                <div class="vp-seek-row">
+                    <input type="range" class="vp-seek" min="0" max="100" value="0" step="0.1" id="vp-seek-${index}">
+                </div>
+                <div class="vp-btn-row">
+                    <button class="vp-btn vp-play-btn" title="Play/Pause">
+                        <svg id="${playId}" class="vp-icon vp-icon-play" viewBox="0 0 24 24" fill="currentColor"><polygon points="6,3 20,12 6,21"/></svg>
+                    </button>
+                    <div class="vp-time">
+                        <span id="${currentTimeId}">0:00</span>
+                        <span class="vp-time-sep">/</span>
+                        <span id="${durationId}">0:00</span>
+                    </div>
+                    <div class="vp-spacer"></div>`;
+
+            if (audio) {
+                controlsHTML += `
+                    <button id="${audioBtnId}" class="vp-btn vp-audio-btn" title="Toggle narration">
+                        <svg id="audio-icon-${index}" class="vp-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 8.5v7a4.49 4.49 0 002.5-3.5zM14 3.23v2.06a7.007 7.007 0 010 13.42v2.06A9.013 9.013 0 0014 3.23z"/></svg>
+                    </button>`;
+            }
+
+            controlsHTML += `
+                    ${isFullVideo ? '<button class="vp-btn vp-speed-btn" title="Playback speed">4x</button>' : ''}
+                    <button class="vp-btn vp-fullscreen-btn" title="Fullscreen">
+                        <svg class="vp-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M7 14H5v5h5v-2H7v-3zm-2-4h2V7h3V5H5v5zm12 7h-3v2h5v-5h-2v3zM14 5v2h3v3h2V5h-5z"/></svg>
+                    </button>
+                </div>`;
+
+            controlsWrap.innerHTML = controlsHTML;
+
+            const controls = controlsWrap;
+
+            container.appendChild(video);
+            if (audio) {
+                container.appendChild(audio);
+            }
+            container.appendChild(controls);
+
+            // Add highlight dots to the seek bar for full video
+            if (isFullVideo && window.reportData && window.reportData.highlights && window.reportData.highlights.length) {
+                const seekRow = controls.querySelector('.vp-seek-row');
+                window.reportData.highlights.forEach((h, i) => {
+                    const dot = document.createElement('div');
+                    dot.className = 'vp-highlight-dot ' + highlightTypeClass(h.type);
+                    dot.dataset.timestamp = h.timestamp || 0;
+                    dot.dataset.index = i;
+                    dot.title = h.title || '';
+                    dot.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        window.seekFullVideo(h.timestamp || 0);
+                    });
+                    seekRow.appendChild(dot);
+                });
+            }
+
+            // Event listeners
+            const playSVGPlay = '<polygon points="6,3 20,12 6,21"/>';
+            const playSVGPause = '<rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/>';
+
+            const playBtn = controls.querySelector('.vp-play-btn');
+            const playIcon = document.getElementById(playId);
+            const currentTimeEl = document.getElementById(currentTimeId);
+            const durationEl = document.getElementById(durationId);
+            const fullscreenBtn = controls.querySelector('.vp-fullscreen-btn');
+            const seekBar = document.getElementById(`vp-seek-${index}`);
+
+            // Play/Pause - sync icon via native events (handles coach pause too)
+            video.addEventListener('play', () => { playIcon.innerHTML = playSVGPause; });
+            video.addEventListener('pause', () => { playIcon.innerHTML = playSVGPlay; });
+
+            playBtn.addEventListener('click', () => {
+                // If coach has paused the video, resume via coach controller
+                if (isFullVideo && window._coachController && window._coachController.isPaused) {
+                    window._coachController.resume();
+                    return;
+                }
+                if (video.paused) {
+                    video.play();
+                    if (audio && !audio.muted) {
+                        audio.currentTime = video.currentTime;
+                        audio.play().catch(e => console.log('Audio sync failed:', e));
+                    }
+                } else {
+                    video.pause();
+                    if (audio) audio.pause();
+                }
+            });
+
+            // Time display + seek bar update
+            video.addEventListener('loadedmetadata', () => {
+                durationEl.textContent = formatVideoTime(video.duration);
+            });
+
+            function updateSeekFill() {
+                if (!video.duration || !seekBar) return;
+                const pct = (video.currentTime / video.duration) * 100;
+                seekBar.style.background = `linear-gradient(to right, rgba(167,139,250,0.7) ${pct}%, rgba(255,255,255,0.2) ${pct}%)`;
+            }
+
+            // Smooth progress bar + timer via requestAnimationFrame (handles high-speed playback)
+            let progressRAF = null;
+            function updateProgress() {
+                currentTimeEl.textContent = formatVideoTime(video.currentTime);
+                if (video.duration && seekBar) {
+                    seekBar.value = (video.currentTime / video.duration) * 100;
+                    updateSeekFill();
+                }
+                if (!video.paused && !video.ended) {
+                    progressRAF = requestAnimationFrame(updateProgress);
+                }
+            }
+            video.addEventListener('play', () => {
+                if (!progressRAF) progressRAF = requestAnimationFrame(updateProgress);
+            });
+            video.addEventListener('pause', () => {
+                cancelAnimationFrame(progressRAF);
+                progressRAF = null;
+                updateProgress(); // final update at exact pause position
+            });
+            video.addEventListener('seeked', () => updateProgress());
+
+            // Seek bar input
+            if (seekBar) {
+                seekBar.addEventListener('input', () => {
+                    if (video.duration) {
+                        video.currentTime = (seekBar.value / 100) * video.duration;
+                        updateSeekFill();
+                        if (audio && !audio.muted) {
+                            audio.currentTime = video.currentTime;
+                        }
+                    }
+                });
+            }
+
+            // Fullscreen
+            fullscreenBtn.addEventListener('click', () => {
+                if (!document.fullscreenElement) {
+                    if (container.requestFullscreen) {
+                        container.requestFullscreen();
+                    } else if (container.webkitRequestFullscreen) {
+                        container.webkitRequestFullscreen();
+                    }
+                } else {
+                    if (document.exitFullscreen) {
+                        document.exitFullscreen();
+                    } else if (document.webkitExitFullscreen) {
+                        document.webkitExitFullscreen();
+                    }
+                }
+            });
+
+            // Speed button (full video only)
+            if (isFullVideo) {
+                const speedBtn = controls.querySelector('.vp-speed-btn');
+                const speeds = [1, 2, 4, 8];
+                let speedIndex = 2; // default 4x
+                video.playbackRate = 4;
+
+                speedBtn.addEventListener('click', () => {
+                    speedIndex = (speedIndex + 1) % speeds.length;
+                    const rate = speeds[speedIndex];
+                    video.playbackRate = rate;
+                    speedBtn.textContent = rate + 'x';
+                });
+            }
+
+            // Audio button
+            if (audio) {
+                const audioBtn = document.getElementById(audioBtnId);
+                const audioIconEl = document.getElementById(`audio-icon-${index}`);
+                const audioSVGOn = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 8.5v7a4.49 4.49 0 002.5-3.5zM14 3.23v2.06a7.007 7.007 0 010 13.42v2.06A9.013 9.013 0 0014 3.23z"/>';
+                const audioSVGOff = '<path d="M16.5 12A4.5 4.5 0 0014 8.5v2.09l2.41 2.41c.06-.31.09-.65.09-1zm2.5 0a7 7 0 01-.57 2.77l1.52 1.52A8.94 8.94 0 0021 12a9.01 9.01 0 00-7-8.77v2.06A7.007 7.007 0 0119 12zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 003.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
+                audio.muted = false;
+
+                audioBtn.addEventListener('click', () => {
+                    if (audio.muted) {
+                        audio.muted = false;
+                        audioIconEl.innerHTML = audioSVGOn;
+                        audioBtn.classList.remove('muted');
+                        audioBtn.title = 'Mute audio';
+                        if (!video.paused) {
+                            audio.currentTime = video.currentTime;
+                            audio.play().catch(e => console.log('Audio play prevented:', e));
+                        }
+                    } else {
+                        audio.muted = true;
+                        audioIconEl.innerHTML = audioSVGOff;
+                        audioBtn.classList.add('muted');
+                        audioBtn.title = 'Unmute audio';
+                        audio.pause();
+                    }
+                });
+
+                video.addEventListener('play', () => {
+                    if (!audio.muted && audio.paused) {
+                        audio.currentTime = video.currentTime;
+                        audio.play().catch(e => console.log('Audio play prevented:', e));
+                    }
+                });
+
+                video.addEventListener('pause', () => {
+                    if (!audio.paused && video.currentTime < video.duration - 0.1) {
+                        audio.pause();
+                    }
+                });
+
+                video.addEventListener('ended', () => {
+                    // Let audio continue playing past video end
+                });
+            }
+
+            // ── Attach Coach Highlight Controller to full match video ──
+            if (isFullVideo && window.reportData && window.reportData.highlights && window.reportData.highlights.length > 0) {
+                const coach = new CoachHighlightController(window.reportData.highlights);
+                window._coachController = coach;
+                coach.attach(video);
+            }
+        });
+    }
+
+    // ── Loader ────────────────────────────────────────────────
+
+    function hideLoader() {
+        const loader = document.getElementById('loader');
+        if (loader) loader.classList.add('hidden');
+    }
+
+    function showError(message) {
+        hideLoader();
+        document.getElementById('app').innerHTML = `
+            <div class="error-state">
+                <div class="error-icon">!</div>
+                <div class="error-msg">${message}</div>
+                <button class="error-retry" onclick="location.reload()">Retry</button>
+            </div>
+        `;
+    }
+
+    // ── Init ──────────────────────────────────────────────────
+
+    async function init() {
+        if (!SESSION_ID) {
+            showError('No session ID found. Open this page via /report/v2/{session_id}');
+            return;
+        }
+
+        try {
+            window.reportData = await fetchReport();
+            document.body.setAttribute('data-theme', 'infographic');
+            render();
+            hideLoader();
+        } catch (err) {
+            console.error('Failed to load report:', err);
+            showError(`Could not load report for session "${SESSION_ID}". Make sure processing is complete.`);
+        }
+    }
+
+    // ── Video Overlay (Bottom popup for timestamp clicks) ────
+
+    window.openVideoOverlay = function(clipNumber, title, description, context = 'full', finalIndex = null) {
+        const overlay = document.getElementById('video-overlay');
+        const player = document.getElementById('vo-player');
+        const audio = document.getElementById('vo-audio');
+        const audioBtn = document.getElementById('vo-audio-btn');
+        const titleEl = document.getElementById('vo-title');
+        const textEl = document.getElementById('vo-text');
+
+        const clip = window.reportData.clips.find(c => c.clip_number === clipNumber);
+        if (!clip) {
+            console.error(`Clip ${clipNumber} not found`);
+            return;
+        }
+
+        player.src = clipUrl(clipNumber);
+        player.load();
+        player.play()
+            .then(() => {
+                document.getElementById('vo-play-icon').innerHTML = '<rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/>';
+            })
+            .catch(e => console.log('Autoplay prevented:', e));
+
+        // Set up audio narration based on context
+        let audioFile = null;
+        let audioSource = 'clip-level';
+
+        // Check final_analysis audio first (for Good Plays/Mistakes sections)
+        if (finalIndex !== null && window.reportData.final_analysis && window.reportData.final_analysis.audio) {
+            const finalAudio = window.reportData.final_analysis.audio;
+            if (context === 'goodplay' && finalAudio.good_plays && finalAudio.good_plays[finalIndex]) {
+                audioFile = finalAudio.good_plays[finalIndex].file;
+                audioSource = 'final-analysis-goodplay';
+            } else if (context === 'mistake' && finalAudio.mistakes && finalAudio.mistakes[finalIndex]) {
+                audioFile = finalAudio.mistakes[finalIndex].file;
+                audioSource = 'final-analysis-mistake';
+            }
+        }
+
+        // Fallback to clip-level audio
+        if (!audioFile && clip.audio) {
+            let audioContext = context;
+            if (!clip.audio[context] && clip.audio.full) {
+                audioContext = 'full';
+            }
+            if (clip.audio[audioContext]) {
+                audioFile = clip.audio[audioContext].file;
+                audioSource = `clip-level-${audioContext}`;
+            }
+        }
+
+        if (audioFile) {
+            const audioUrl = `${audioFile}`;
+            audio.src = audioUrl;
+            audio.load();
+            audio.play().catch(e => console.log('Audio autoplay prevented:', e));
+            audioBtn.style.display = 'flex';
+            audio.muted = false;
+            audioBtn.classList.remove('muted');
+            player.addEventListener('play', () => audio.play().catch(() => {}));
+            player.addEventListener('pause', () => {
+                if (player.currentTime < player.duration - 0.1) {
+                    audio.pause();
+                }
+            });
+        } else {
+            audioBtn.style.display = 'none';
+            audio.src = '';
+        }
+
+        titleEl.textContent = title || `Clip ${clipNumber} - ${formatTime(clip.start_time)}-${formatTime(clip.end_time)}`;
+        textEl.innerHTML = description || `
+            <p><strong>Situation:</strong> ${clip.situation || 'N/A'}</p>
+            ${clip.good_play ? `<p><strong>Good Play:</strong> ${clip.good_play}</p>` : ''}
+            ${clip.mistake ? `<p><strong>Mistake:</strong> ${clip.mistake}</p>` : ''}
+            ${clip.tip ? `<p><strong>Tip:</strong> ${clip.tip}</p>` : ''}
+        `;
+
+        overlay.classList.add('visible');
+    };
+
+    window.closeVideoOverlay = function() {
+        const overlay = document.getElementById('video-overlay');
+        const player = document.getElementById('vo-player');
+        const audio = document.getElementById('vo-audio');
+
+        overlay.classList.remove('visible');
+        player.pause();
+        player.currentTime = 0;
+        document.getElementById('vo-play-icon').innerHTML = '<polygon points="6,3 20,12 6,21"/>';
+        const voSeek = document.getElementById('vo-seek');
+        if (voSeek) voSeek.value = 0;
+        audio.pause();
+        audio.currentTime = 0;
+    };
+
+    window.toggleAudio = function() {
+        const audio = document.getElementById('vo-audio');
+        const audioBtn = document.getElementById('vo-audio-btn');
+        const audioIcon = document.getElementById('vo-audio-icon');
+        const svgOn = '<path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3A4.5 4.5 0 0014 8.5v7a4.49 4.49 0 002.5-3.5zM14 3.23v2.06a7.007 7.007 0 010 13.42v2.06A9.013 9.013 0 0014 3.23z"/>';
+        const svgOff = '<path d="M16.5 12A4.5 4.5 0 0014 8.5v2.09l2.41 2.41c.06-.31.09-.65.09-1zm2.5 0a7 7 0 01-.57 2.77l1.52 1.52A8.94 8.94 0 0021 12a9.01 9.01 0 00-7-8.77v2.06A7.007 7.007 0 0119 12zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06a8.99 8.99 0 003.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"/>';
+
+        if (audio.muted) {
+            audio.muted = false;
+            audioIcon.innerHTML = svgOn;
+            audioBtn.classList.remove('muted');
+            audioBtn.title = 'Mute audio narration';
+        } else {
+            audio.muted = true;
+            audioIcon.innerHTML = svgOff;
+            audioBtn.classList.add('muted');
+            audioBtn.title = 'Unmute audio narration';
+        }
+    };
+
+    // ── Custom Video Controls ─────────────────────────────────
+
+    window.toggleVideoPlay = function() {
+        const player = document.getElementById('vo-player');
+        const playIcon = document.getElementById('vo-play-icon');
+
+        if (player.paused) {
+            player.play();
+            playIcon.innerHTML = '<rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/>';
+        } else {
+            player.pause();
+            playIcon.innerHTML = '<polygon points="6,3 20,12 6,21"/>';
+        }
+    };
+
+    window.toggleFullscreen = function() {
+        const videoContainer = document.querySelector('.vo-video');
+        if (!document.fullscreenElement) {
+            if (videoContainer.requestFullscreen) {
+                videoContainer.requestFullscreen();
+            } else if (videoContainer.webkitRequestFullscreen) {
+                videoContainer.webkitRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            }
+        }
+    };
+
+    window.downloadVideo = function() {
+        const player = document.getElementById('vo-player');
+        const videoUrl = player.src;
+        const urlParts = videoUrl.split('/');
+        const filename = urlParts[urlParts.length - 1] || 'clip.mp4';
+        const a = document.createElement('a');
+        a.href = videoUrl;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+    };
+
+    // Time formatting for video controls
+    function formatVideoTime(seconds) {
+        const mins = Math.floor(seconds / 60);
+        const secs = Math.floor(seconds % 60);
+        return `${mins}:${secs.toString().padStart(2, '0')}`;
+    }
+
+    // Listen for overlay video time updates
+    document.addEventListener('DOMContentLoaded', () => {
+        const player = document.getElementById('vo-player');
+        const currentTimeEl = document.getElementById('vo-current-time');
+        const durationEl = document.getElementById('vo-duration');
+        const voSeek = document.getElementById('vo-seek');
+
+        player.addEventListener('loadedmetadata', () => {
+            durationEl.textContent = formatVideoTime(player.duration);
+        });
+
+        player.addEventListener('timeupdate', () => {
+            currentTimeEl.textContent = formatVideoTime(player.currentTime);
+            if (player.duration && voSeek) {
+                voSeek.value = (player.currentTime / player.duration) * 100;
+            }
+        });
+
+        player.addEventListener('ended', () => {
+            document.getElementById('vo-play-icon').innerHTML = '<polygon points="6,3 20,12 6,21"/>';
+        });
+
+        if (voSeek) {
+            voSeek.addEventListener('input', () => {
+                if (player.duration) {
+                    player.currentTime = (voSeek.value / 100) * player.duration;
+                }
+            });
+        }
+    });
+
+    // Close overlays on Escape key
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            window.closeVideoOverlay();
+            if (window._coachController && window._coachController.isPaused) {
+                window._coachController.resume();
+            }
+        }
+    });
+
+    // Close coach popup on backdrop click
+    document.addEventListener('click', (e) => {
+        if (e.target && e.target.id === 'coach-backdrop') {
+            if (window._coachController && window._coachController.isPaused) {
+                window._coachController.resume();
+            }
+        }
+    });
+
+    // ── Boot ──────────────────────────────────────────────────
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+    } else {
+        init();
+    }
+
+})();
+
+    </script>
+</body>
+</html>
