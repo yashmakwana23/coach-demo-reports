@@ -31,5 +31,18 @@
     "clips_analyzed": 3,
     "highlights_count": 2,
     "exported_at": "2026-02-08T20:17:46.581681"
+  },
+    {
+    "session_id": "20260209_145221",
+    "game_name": "Brawl Stars",
+    "duration_seconds": 65,
+    "grade": "D",
+    "grade_reason": "2 matches: D, F",
+    "match_result": "",
+    "clips_analyzed": 0,
+    "highlights_count": 6,
+    "multi_match": true,
+    "total_matches": 2,
+    "exported_at": "2026-02-09T21:23:14.466141"
   }
 ]
