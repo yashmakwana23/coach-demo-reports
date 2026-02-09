@@ -112,52 +112,85 @@
 <body>
     <div class="container">
         <h1>Match Coach Reports</h1>
-        <p class="subtitle">3 sessions analyzed</p>
-        <div class="grid">
-            
-        <a href="20260205_193139/index.html" class="card">
-            <div class="card-top">
-                <div class="card-game">Brawl Stars - Showdown (Every Brawler for themselves!)</div>
-                <div class="card-grade" style="background:#ef4444">F</div>
-            </div>
-            <div class="card-date">Feb 05, 2026 at 07:31 PM</div>
-            <div class="card-result">Loss - Eliminated (4th place or worse)</div>
-            <div class="card-meta">
-                <span>0:40</span>
-                <span>4 clips</span>
-                <span>4 highlights</span>
-            </div>
-            <div class="card-arrow">View Report &rarr;</div>
-        </a>
-        <a href="20260205_191938/index.html" class="card">
-            <div class="card-top">
-                <div class="card-game">Brawl Stars - Showdown</div>
-                <div class="card-grade" style="background:#84cc16">B</div>
-            </div>
-            <div class="card-date">Feb 05, 2026 at 07:19 PM</div>
-            <div class="card-result">Win - 1st Place</div>
-            <div class="card-meta">
-                <span>0:40</span>
-                <span>4 clips</span>
-                <span>3 highlights</span>
-            </div>
-            <div class="card-arrow">View Report &rarr;</div>
-        </a>
-        <a href="20260205_152317/index.html" class="card">
-            <div class="card-top">
-                <div class="card-game">Brawl Stars</div>
-                <div class="card-grade" style="background:#ef4444">F</div>
-            </div>
-            <div class="card-date">Feb 05, 2026 at 03:23 PM</div>
-            <div class="card-result">Loss - Eliminated with 5 Brawlers left</div>
-            <div class="card-meta">
-                <span>0:24</span>
-                <span>3 clips</span>
-                <span>2 highlights</span>
-            </div>
-            <div class="card-arrow">View Report &rarr;</div>
-        </a>
-        </div>
+        <p class="subtitle" id="subtitle">Loading sessions…</p>
+        <div class="grid" id="grid"></div>
+    </div>
+
+    <script>
+        function gradeColor(grade) {
+            switch ((grade||'').toUpperCase()) {
+                case 'A': return '#06b6d4';
+                case 'B': return '#84cc16';
+                case 'C': return '#f59e0b';
+                case 'D': return '#f97316';
+                case 'F': return '#ef4444';
+                default: return '#475569';
+            }
+        }
+
+        function formatDuration(sec) {
+            if (!sec && sec !== 0) return '';
+            const m = Math.floor(sec/60);
+            const s = sec%60;
+            return m + ':' + String(s).padStart(2,'0');
+        }
+
+        function fmtDate(iso) {
+            try {
+                const d = new Date(iso);
+                return d.toLocaleString(undefined, { month: 'short', day: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+            } catch(e) { return iso }
+        }
+
+        fetch('sessions.json').then(r=>r.json()).then(sessions=>{
+            const grid = document.getElementById('grid');
+            const subtitle = document.getElementById('subtitle');
+            if (!Array.isArray(sessions) || sessions.length===0) {
+                subtitle.textContent = 'No sessions analyzed';
+                grid.innerHTML = '<div class="empty">No sessions found.</div>';
+                return;
+            }
+            // sort by exported_at desc
+            sessions.sort((a,b)=> new Date(b.exported_at) - new Date(a.exported_at));
+            subtitle.textContent = `${sessions.length} sessions analyzed`;
+            grid.innerHTML = '';
+            for (const s of sessions) {
+                const href = (s.session_id || '').replace(/\/?$/,'') + '/index.html';
+                const grade = s.grade || '';
+                const color = gradeColor(grade);
+                const game = s.game_name || 'Session';
+                const date = fmtDate(s.exported_at || s.session_id);
+                const result = s.match_result || '';
+                const duration = formatDuration(s.duration_seconds);
+                const clips = s.clips_analyzed != null ? s.clips_analyzed : '';
+                const highlights = s.highlights_count != null ? s.highlights_count : '';
+                const meta = [];
+                if (duration) meta.push(duration);
+                if (clips !== '') meta.push(`${clips} clips`);
+                if (highlights !== '') meta.push(`${highlights} highlights`);
+                if (s.multi_match) meta.push(`${s.total_matches || '?'} matches`);
+
+                const a = document.createElement('a');
+                a.className = 'card';
+                a.href = href;
+                a.innerHTML = `
+                    <div class="card-top">
+                        <div class="card-game">${game}</div>
+                        <div class="card-grade" style="background:${color}">${grade}</div>
+                    </div>
+                    <div class="card-date">${date}</div>
+                    <div class="card-result">${result}</div>
+                    <div class="card-meta">${meta.map(x=>'<span>'+x+'</span>').join('')}</div>
+                    <div class="card-arrow">View Report &rarr;</div>
+                `;
+                grid.appendChild(a);
+            }
+        }).catch(err=>{
+            document.getElementById('subtitle').textContent = 'Error loading sessions';
+            document.getElementById('grid').innerHTML = '<div class="empty">Failed to load sessions.json</div>';
+            console.error(err);
+        });
+    </script>
     </div>
 </body>
 </html>

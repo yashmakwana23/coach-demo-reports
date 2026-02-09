@@ -3172,7 +3172,33 @@ body[data-theme="infographic"] {
     // ── Seek full match video to a timestamp ───────────────────
 
     window.seekFullVideo = function (timestamp, audioFile) {
-        // Open the video overlay with the match video seeked to the timestamp
+        // Find the clip that contains this timestamp and open detailed popup
+        var rd = window.reportData;
+        if (!rd) return;
+
+        var clip = null;
+        var mi = window._activeMatchIndex || 0;
+        var match = (rd.matches && rd.matches[mi]) ? rd.matches[mi] : null;
+        if (match && match.clips) {
+            for (var i = 0; i < match.clips.length; i++) {
+                var c = match.clips[i];
+                var cStart = c.start_time || 0;
+                var cEnd = c.end_time || 0;
+                if (timestamp >= cStart && timestamp < cEnd) {
+                    clip = c;
+                    break;
+                }
+            }
+        }
+
+        // If we found a matching clip, open detailed popup via openClipDetail
+        if (clip) {
+            var clipNum = clip.clip_number || 0;
+            window.openClipDetail(mi + 1, clipNum, '', audioFile || '');
+            return;
+        }
+
+        // Fallback: no matching clip — show video at timestamp with info visible
         var overlay = document.getElementById('video-overlay');
         var player = document.getElementById('vo-player');
         var titleEl = document.getElementById('vo-title');
@@ -3182,20 +3208,13 @@ body[data-theme="infographic"] {
 
         if (!overlay || !player) return;
 
-        // Get current match video URL
+        // Get current match video URL (works in both live + static)
         var matchVideoSrc = '';
-        var rd = window.reportData;
-        var sid = rd ? rd.session_id || '' : '';
-        var apiBase = '/api/sessions/' + sid;
-        if (rd && rd.multi_match && rd.matches) {
-            var mi = window._activeMatchIndex || 0;
-            var m = rd.matches[mi];
-            if (m && m.video_file) {
-                matchVideoSrc = apiBase + '/files/' + m.video_file;
-            }
+        if (match && match.video_file && window.fileUrl) {
+            matchVideoSrc = window.fileUrl(match.video_file);
         }
         if (!matchVideoSrc) {
-            matchVideoSrc = apiBase + '/video';
+            matchVideoSrc = window.fullVideoUrl();
         }
 
         player.src = matchVideoSrc;
@@ -3210,15 +3229,13 @@ body[data-theme="infographic"] {
             }
         });
 
-        // Hide title/text — compact video only
-        titleEl.textContent = '';
+        // Show timestamp info in detailed mode
+        titleEl.textContent = 'Moment at ' + formatTimestamp(timestamp);
         textEl.innerHTML = '';
-        var infoEl = overlay.querySelector('.vo-info');
-        if (infoEl) infoEl.style.display = 'none';
 
         // Play audio narration if provided
         if (audioFile && audio) {
-            var audioSrc = apiBase + '/files/' + audioFile;
+            var audioSrc = window.fileUrl ? window.fileUrl(audioFile) : audioFile;
             audio.src = audioSrc;
             audio.load();
             audio.play().catch(function () {});
@@ -3228,8 +3245,11 @@ body[data-theme="infographic"] {
             if (audio) audio.src = '';
         }
 
-        // Compact mode: small video, bottom-right
-        overlay.classList.add('visible', 'vo-compact');
+        // Full mode with info visible (not compact)
+        var infoEl = overlay.querySelector('.vo-info');
+        if (infoEl) infoEl.style.display = '';
+        overlay.classList.remove('vo-compact');
+        overlay.classList.add('visible');
     };
 
     // ── Play clip audio narration ─────────────────────────────
@@ -3237,9 +3257,7 @@ body[data-theme="infographic"] {
     var _clipAudioEl = null;
 
     window.playClipAudio = function (btn, audioFile) {
-        var rd = window.reportData;
-        var sid = rd ? rd.session_id || '' : '';
-        var audioSrc = '/api/sessions/' + sid + '/files/' + audioFile;
+        var audioSrc = window.fileUrl ? window.fileUrl(audioFile) : audioFile;
 
         // Stop if already playing this file
         if (_clipAudioEl && !_clipAudioEl.paused && _clipAudioEl.dataset.src === audioSrc) {
@@ -3306,16 +3324,16 @@ body[data-theme="infographic"] {
         }
         if (!clip) return;
 
-        // Build clip video URL using match video with time range
-        var sid = rd.session_id || '';
-        var apiBase = '/api/sessions/' + sid;
+        // Build clip video URL using match video with time range (works in both live + static)
         var matchFile = '';
         if (rd.matches && rd.matches[mi]) {
             matchFile = rd.matches[mi].video_file || '';
         }
-        var videoUrl = matchFile
-            ? apiBase + '/files/' + matchFile + '#t=' + (clip.start_time || 0) + ',' + (clip.end_time || 0)
-            : apiBase + '/video#t=' + (clip.start_time || 0) + ',' + (clip.end_time || 0);
+        var clipStart = clip.start_time || 0;
+        var clipEnd = clip.end_time || 0;
+        var videoUrl = matchFile && window.fileUrl
+            ? window.fileUrl(matchFile) + '#t=' + clipStart + ',' + clipEnd
+            : window.fullVideoUrl() + '#t=' + clipStart + ',' + clipEnd;
 
         player.src = videoUrl;
         player.load();
@@ -3365,7 +3383,7 @@ body[data-theme="infographic"] {
         player.play().catch(function () {});
 
         if (audioFile) {
-            audio.src = apiBase + '/files/' + audioFile;
+            audio.src = window.fileUrl ? window.fileUrl(audioFile) : audioFile;
             audio.load();
             audio.play().catch(function () {});
             if (audioBtn) audioBtn.style.display = '';
@@ -3503,6 +3521,10 @@ body[data-theme="infographic"] {
     async function fetchReport() {
         return EMBEDDED_REPORT;
     }
+
+    // ── Expose URL helpers globally (used by infographic.js overlays) ──
+    window.fileUrl = fileUrl;
+    window.fullVideoUrl = fullVideoUrl;
 
     // ── Context object passed to renderers ────────────────────
     function buildContext() {
